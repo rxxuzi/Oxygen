@@ -7,6 +7,7 @@ from path import output_path
 
 default_quality = 0
 
+
 def main():
     parser = argparse.ArgumentParser(description='Download videos or audio from multiple URLs in parallel.')
     parser.add_argument('urls', nargs='+', type=str, help='The URLs of the videos to download.')
@@ -30,15 +31,13 @@ def main():
         futures = []
         if args.audio:
             for url in args.urls:
-                futures.append(executor.submit(download_audio, url, None,output_path))
+                futures.append(executor.submit(download_audio, url, None, output_path))
         elif args.video:
             for url in args.urls:
-                futures.append(executor.submit(download_video, url, default_quality, None,output_path))
+                futures.append(executor.submit(download_video, url, default_quality, None, output_path))
 
     # Collect results from all futures
     results = [future.result() for future in futures]
-
-    print(results)
 
     # Calculate the sum of the values in the `result` key
     sum_result: int = sum(result['result'] for result in results)

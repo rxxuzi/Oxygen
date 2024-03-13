@@ -8,7 +8,17 @@
 #define ID_EDIT_URL 2
 #define ID_RADIO_AUDIO 3
 #define ID_RADIO_VIDEO 4
-#define API_PATH "src/api.py"
+
+// コントロールの識別子
+#define ID_TAB_CONTROL 100
+#define ID_CONVERT_BUTTON 101
+#define ID_RADIO_MP3 102
+#define ID_RADIO_MP4 103
+
+#define API_PATH "src/api_download.py"
+
+#define WIDTH 720
+#define HEIGHT 360
 
 HBITMAP hImage;
 LRESULT CALLBACK WindowProcedure(HWND, UINT, WPARAM, LPARAM);
@@ -26,7 +36,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdsho
 
     if (!RegisterClassW(&wc)) return -1;
 
-    CreateWindowW(L"myWindowClass", L"Oxygen", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 720, 360,  NULL, NULL, hInst, NULL);
+    CreateWindowW(L"myWindowClass", L"Oxygen", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, WIDTH, HEIGHT,  NULL, NULL, hInst, NULL);
 
     MSG msg = {0};
     while (GetMessage(&msg, NULL, 0, 0)) {
