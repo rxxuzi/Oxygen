@@ -1,0 +1,90 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "com.rxxuzi.oxygen",
+  "productName": "Oxygen",
+  "copyright": "Copyright © 2025 rxxuzi",
+  "directories": {
+    "output": "out",
+    "buildResources": "resources"
+  },
+  "files": [
+    "dist/**/*",
+    "!dist/**/*.map",
+    "package.json"
+  ],
+  "extraResources": [
+    {
+      "from": "resources/binaries/win32",
+      "to": "binaries",
+      "filter": ["**/*"]
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64", "ia32"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      },
+      {
+        "target": "zip",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "resources/icons/icon.ico",
+    "publisherName": "rxxuzi",
+    "requestedExecutionLevel": "asInvoker",
+    "signAndEditExecutable": false
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "allowElevation": true,
+    "installerIcon": "resources/icons/icon.ico",
+    "uninstallerIcon": "resources/icons/icon.ico",
+    "installerHeaderIcon": "resources/icons/icon.ico",
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Oxygen",
+    "artifactName": "${productName}-Setup-${version}.${ext}",
+    "uninstallDisplayName": "Oxygen",
+    "deleteAppDataOnUninstall": false
+  },
+  "portable": {
+    "artifactName": "${productName}-Portable-${version}.${ext}"
+  },
+  "mac": {
+    "target": [
+      {
+        "target": "dmg",
+        "arch": ["x64", "arm64"]
+      }
+    ],
+    "icon": "resources/icons/icon.icns",
+    "category": "public.app-category.utilities"
+  },
+  "linux": {
+    "target": [
+      {
+        "target": "AppImage",
+        "arch": ["x64"]
+      },
+      {
+        "target": "deb",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "resources/icons",
+    "category": "Utility"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "rxxuzi",
+    "repo": "oxygen",
+    "releaseType": "release"
+  }
+}

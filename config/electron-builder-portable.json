@@ -1,0 +1,51 @@
+{
+  "appId": "com.rxxuzi.oxygen",
+  "productName": "Oxygen",
+  "copyright": "Copyright © 2025 rxxuzi",
+  "directories": {
+    "output": "out",
+    "buildResources": "resources"
+  },
+  "files": [
+    "dist/**/*",
+    "!dist/**/*.map",
+    "!dist/**/*.ts",
+    "!node_modules/**/test/**",
+    "!node_modules/**/tests/**",
+    "!node_modules/**/*.md",
+    "!node_modules/**/*.txt",
+    "!node_modules/**/LICENSE*",
+    "!node_modules/**/CHANGELOG*"
+  ],
+  "extraResources": [
+    {
+      "from": "resources/binaries/win32",
+      "to": "binaries",
+      "filter": ["**/*"]
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "resources/icons/icon.ico",
+    "publisherName": "rxxuzi",
+    "requestedExecutionLevel": "asInvoker",
+    "signAndEditExecutable": false
+  },
+  "portable": {
+    "artifactName": "${productName}-Portable-${version}-${arch}.exe"
+  },
+  "compression": "maximum",
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "allowElevation": false,
+    "createDesktopShortcut": false,
+    "createStartMenuShortcut": false
+  }
+}
