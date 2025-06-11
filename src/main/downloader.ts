@@ -35,7 +35,8 @@ export class Downloader {
 
             return new Promise((resolve, reject) => {
                 this.currentProcess = spawn(this.ytDlpPath, args, {
-                    env: { ...process.env, FFMPEG_PATH: this.ffmpegPath }
+                    env: { ...process.env, FFMPEG_PATH: this.ffmpegPath },
+                    stdio: ['ignore', 'pipe', 'pipe']
                 });
 
                 let stderr = '';
@@ -49,7 +50,7 @@ export class Downloader {
                 };
 
                 this.currentProcess.stdout.on('data', (data: Buffer) => {
-                    const output = data.toString();
+                    const output = data.toString('utf8');
                     const progress = this.parseProgress(output);
 
                     if (progress) {
@@ -59,7 +60,7 @@ export class Downloader {
                 });
 
                 this.currentProcess.stderr.on('data', (data: Buffer) => {
-                    stderr += data.toString();
+                    stderr += data.toString('utf8');
                 });
 
                 this.currentProcess.on('close', (code: number) => {
@@ -90,6 +91,7 @@ export class Downloader {
         args.push('--no-playlist');
         args.push('--progress');
         args.push('--newline');
+        args.push('--update'); // Auto-update yt-dlp
 
         // Output path and filename
         const outputTemplate = path.join(options.outputPath, '%(title)s.%(ext)s');

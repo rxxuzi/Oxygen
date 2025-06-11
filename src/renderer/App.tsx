@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Settings, FileText, Shield, Play } from 'lucide-react';
+import { Download, Settings, FileText, Shield } from 'lucide-react';
+import { OxygenIcon } from './components/ui/OxygenIcon';
 import { DownloadForm } from './components/DownloadForm';
 import { ProgressBar } from './components/ProgressBar';
 import { SettingsPanel } from './components/SettingsPanel';
 import { LogsViewer } from './components/LogsViewer';
 import { AuthPanel } from './components/AuthPanel';
-import { Tabs } from './components/ui/Tabs';
 import { Button } from './components/ui/Button';
 import { Card } from './components/ui/card';
 import { useDownloadStore } from './stores/download-store';
@@ -39,9 +39,7 @@ export default function App() {
             <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container flex h-14 items-center">
                     <div className="flex items-center space-x-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                            <Play className="h-4 w-4 text-primary-foreground fill-current" />
-                        </div>
+                        <OxygenIcon size={32} className="flex-shrink-0" />
                         <div className="flex flex-col">
                             <h1 className="text-lg font-semibold">Oxygen</h1>
                         </div>
@@ -84,7 +82,7 @@ export default function App() {
                 {/* Main Tab */}
                 {activeTab === 'main' && (
                     <div className="space-y-6">
-                        <div>
+                        <div className="space-y-2">
                             <h2 className="text-2xl font-bold tracking-tight">Download</h2>
                             <p className="text-muted-foreground">
                                 Download videos and audio from various platforms

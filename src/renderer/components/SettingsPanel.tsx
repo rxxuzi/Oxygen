@@ -3,6 +3,7 @@ import { useSettingsStore } from '../stores/settings-store';
 import { Input } from './ui/Input';
 import { Select } from './ui/Select';
 import { Button } from './ui/Button';
+import { Card } from './ui/card';
 import { VideoFormat, AudioFormat } from '../../shared/types';
 
 export function SettingsPanel() {
@@ -34,8 +35,8 @@ export function SettingsPanel() {
     return (
         <div className="space-y-6">
             {/* Video Settings */}
-            <div className="card">
-                <h3 className="text-xl mb-4">Video Settings</h3>
+            <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Video Settings</h3>
 
                 <div className="space-y-4">
                     <Select
@@ -46,7 +47,7 @@ export function SettingsPanel() {
                     />
 
                     <div>
-                        <label className="block text-sm mb-2">Output Path</label>
+                        <label className="block text-sm font-medium text-foreground mb-2">Output Path</label>
                         <div className="flex gap-2">
                             <Input
                                 type="text"
@@ -54,17 +55,17 @@ export function SettingsPanel() {
                                 onChange={(e) => updateSettings({ videoOutputPath: e.target.value })}
                                 className="flex-1"
                             />
-                            <Button onClick={() => handleBrowse('video')} variant="secondary">
+                            <Button onClick={() => handleBrowse('video')} variant="outline">
                                 Browse
                             </Button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </Card>
 
             {/* Audio Settings */}
-            <div className="card">
-                <h3 className="text-xl mb-4">Audio Settings</h3>
+            <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Audio Settings</h3>
 
                 <div className="space-y-4">
                     <Select
@@ -75,7 +76,7 @@ export function SettingsPanel() {
                     />
 
                     <div>
-                        <label className="block text-sm mb-2">Output Path</label>
+                        <label className="block text-sm font-medium text-foreground mb-2">Output Path</label>
                         <div className="flex gap-2">
                             <Input
                                 type="text"
@@ -83,21 +84,21 @@ export function SettingsPanel() {
                                 onChange={(e) => updateSettings({ audioOutputPath: e.target.value })}
                                 className="flex-1"
                             />
-                            <Button onClick={() => handleBrowse('audio')} variant="secondary">
+                            <Button onClick={() => handleBrowse('audio')} variant="outline">
                                 Browse
                             </Button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </Card>
 
             {/* Download Settings */}
-            <div className="card">
-                <h3 className="text-xl mb-4">Download Settings</h3>
+            <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Download Settings</h3>
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label className="block text-sm mb-2">Segments</label>
+                        <label className="block text-sm font-medium text-foreground mb-2">Segments</label>
                         <Input
                             type="number"
                             min="1"
@@ -108,7 +109,7 @@ export function SettingsPanel() {
                     </div>
 
                     <div>
-                        <label className="block text-sm mb-2">Retries</label>
+                        <label className="block text-sm font-medium text-foreground mb-2">Retries</label>
                         <Input
                             type="number"
                             min="0"
@@ -118,7 +119,7 @@ export function SettingsPanel() {
                     </div>
 
                     <div>
-                        <label className="block text-sm mb-2">Buffer Size</label>
+                        <label className="block text-sm font-medium text-foreground mb-2">Buffer Size</label>
                         <Input
                             type="text"
                             value={settings.bufferSize}
@@ -127,35 +128,41 @@ export function SettingsPanel() {
                         />
                     </div>
                 </div>
-            </div>
+            </Card>
 
             {/* Other Settings */}
-            <div className="card">
-                <h3 className="text-xl mb-4">Other Settings</h3>
+            <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Other Settings</h3>
 
                 <div className="space-y-4">
-                    <label className="flex items-center gap-2">
+                    <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-input hover:bg-accent transition-colors">
                         <input
                             type="checkbox"
                             checked={settings.writeThumbnail}
                             onChange={(e) => updateSettings({ writeThumbnail: e.target.checked })}
-                            className="w-5 h-5"
+                            className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-ring focus:ring-offset-2"
                         />
-                        <span>Write thumbnail</span>
+                        <div className="flex flex-col">
+                            <span className="text-sm font-medium">Write thumbnail</span>
+                            <span className="text-xs text-muted-foreground">Save thumbnail image separately</span>
+                        </div>
                     </label>
 
-                    <label className="flex items-center gap-2">
+                    <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-input hover:bg-accent transition-colors">
                         <input
                             type="checkbox"
                             checked={settings.embedThumbnail}
                             onChange={(e) => updateSettings({ embedThumbnail: e.target.checked })}
-                            className="w-5 h-5"
+                            className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-ring focus:ring-offset-2"
                         />
-                        <span>Embed thumbnail</span>
+                        <div className="flex flex-col">
+                            <span className="text-sm font-medium">Embed thumbnail</span>
+                            <span className="text-xs text-muted-foreground">Embed thumbnail in media file</span>
+                        </div>
                     </label>
 
                     <div>
-                        <label className="block text-sm mb-2">Proxy Server</label>
+                        <label className="block text-sm font-medium text-foreground mb-2">Proxy Server</label>
                         <Input
                             type="text"
                             value={settings.proxy}
@@ -165,7 +172,7 @@ export function SettingsPanel() {
                     </div>
 
                     <div>
-                        <label className="block text-sm mb-2">Subtitle Languages</label>
+                        <label className="block text-sm font-medium text-foreground mb-2">Subtitle Languages</label>
                         <Input
                             type="text"
                             value={settings.subtitles}
@@ -174,11 +181,13 @@ export function SettingsPanel() {
                         />
                     </div>
                 </div>
-            </div>
+            </Card>
 
-            <Button onClick={resetSettings} variant="secondary" className="w-full">
-                Reset to Defaults
-            </Button>
+            <Card className="p-6">
+                <Button onClick={resetSettings} variant="outline" className="w-full">
+                    Reset to Defaults
+                </Button>
+            </Card>
         </div>
     );
 }

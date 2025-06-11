@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLogsStore } from '../stores/logs-store';
 import { Button } from './ui/Button';
+import { Card } from './ui/card';
 
 export function LogsViewer() {
     const { logs, loadLogs, clearLogs, openLogsFolder } = useLogsStore();
@@ -29,59 +30,79 @@ export function LogsViewer() {
     };
 
     return (
-        <div className="space-y-4">
-            <div className="flex gap-4">
-                <Button onClick={openLogsFolder} variant="secondary">
-                    Open Logs Folder
-                </Button>
-                <Button onClick={handleLoadLogs} variant="secondary" disabled={isLoading}>
-                    {isLoading ? 'Loading...' : 'Reload Logs'}
-                </Button>
-                <Button onClick={handleClearLogs} variant="danger">
-                    Clear All Logs
-                </Button>
-            </div>
+        <div className="space-y-6">
+            <Card className="p-6">
+                <div className="flex flex-wrap gap-3">
+                    <Button onClick={openLogsFolder} variant="outline">
+                        Open Logs Folder
+                    </Button>
+                    <Button onClick={handleLoadLogs} variant="outline" disabled={isLoading} loading={isLoading}>
+                        {isLoading ? 'Loading...' : 'Reload Logs'}
+                    </Button>
+                    <Button onClick={handleClearLogs} variant="destructive">
+                        Clear All Logs
+                    </Button>
+                </div>
+            </Card>
 
-            <div className="card">
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th>Result</th>
-                        <th>Date</th>
-                        <th>URL</th>
-                        <th>Folder</th>
-                        <th>Details</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {logs.length === 0 ? (
-                        <tr>
-                            <td colSpan={5} className="text-center text-muted-foreground">
-                                No download logs found
-                            </td>
-                        </tr>
-                    ) : (
-                        logs.map((log, index) => (
-                            <tr key={index} className={log.result === 'success' ? 'good' : 'bad'}>
-                                <td>{log.result === 'success' ? '✓ Success' : '✗ Failed'}</td>
-                                <td>{formatDate(log.date)}</td>
-                                <td className="truncate max-w-xs" title={log.url}>
-                                    {log.url}
-                                </td>
-                                <td className="truncate max-w-xs" title={log.folder}>
-                                    {log.folder}
-                                </td>
-                                <td className="truncate max-w-xs">
-                                    {log.result === 'success'
-                                        ? log.filename || 'Downloaded'
-                                        : log.error || 'Unknown error'}
-                                </td>
+            <Card className="p-6">
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead>
+                            <tr className="border-b border-border">
+                                <th className="text-left p-3 font-medium text-foreground">Result</th>
+                                <th className="text-left p-3 font-medium text-foreground">Date</th>
+                                <th className="text-left p-3 font-medium text-foreground">URL</th>
+                                <th className="text-left p-3 font-medium text-foreground">Folder</th>
+                                <th className="text-left p-3 font-medium text-foreground">Details</th>
                             </tr>
-                        ))
-                    )}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {logs.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="text-center text-muted-foreground p-8">
+                                        No download logs found
+                                    </td>
+                                </tr>
+                            ) : (
+                                logs.map((log, index) => (
+                                    <tr key={index} className="border-b border-border hover:bg-accent/50 transition-colors">
+                                        <td className="p-3">
+                                            <span className={`inline-flex items-center gap-1 text-sm font-medium ${
+                                                log.result === 'success' 
+                                                    ? 'text-green-600 dark:text-green-400' 
+                                                    : 'text-red-600 dark:text-red-400'
+                                            }`}>
+                                                {log.result === 'success' ? '✓ Success' : '✗ Failed'}
+                                            </span>
+                                        </td>
+                                        <td className="p-3 text-sm text-muted-foreground">
+                                            {formatDate(log.date)}
+                                        </td>
+                                        <td className="p-3 max-w-xs">
+                                            <div className="truncate text-sm" title={log.url}>
+                                                {log.url}
+                                            </div>
+                                        </td>
+                                        <td className="p-3 max-w-xs">
+                                            <div className="truncate text-sm text-muted-foreground" title={log.folder}>
+                                                {log.folder}
+                                            </div>
+                                        </td>
+                                        <td className="p-3 max-w-xs">
+                                            <div className="truncate text-sm">
+                                                {log.result === 'success'
+                                                    ? log.filename || 'Downloaded'
+                                                    : log.error || 'Unknown error'}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </Card>
         </div>
     );
 }

@@ -5,6 +5,8 @@ import { useAuthStore } from '../stores/auth-store';
 import { Input } from './ui/Input';
 import { Select } from './ui/Select';
 import { Button } from './ui/Button';
+import { Card } from './ui/card';
+import { DownloadIcon } from './ui/OxygenIcon';
 import { Quality } from '../../shared/types';
 
 export function DownloadForm() {
@@ -56,45 +58,66 @@ export function DownloadForm() {
     ];
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-                type="url"
-                placeholder="Enter video URL..."
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                disabled={isDownloading}
-                className="w-full"
-            />
-
-            <div className="flex items-center gap-6">
-                <Select
-                    label="Quality"
-                    value={quality}
-                    onChange={(e) => setQuality(e.target.value as Quality)}
-                    options={qualityOptions}
-                    disabled={isDownloading || audioOnly}
-                />
-
-                <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                        type="checkbox"
-                        checked={audioOnly}
-                        onChange={(e) => setAudioOnly(e.target.checked)}
+        <Card className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                    <label htmlFor="url-input" className="block text-sm font-medium text-foreground">
+                        Video URL
+                    </label>
+                    <Input
+                        id="url-input"
+                        type="url"
+                        placeholder="https://www.youtube.com/watch?v=..."
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
                         disabled={isDownloading}
-                        className="w-5 h-5 rounded border-border"
+                        className="w-full text-base"
+                        aria-describedby="url-help"
                     />
-                    <span className="text-sm">Audio Only</span>
-                </label>
-            </div>
+                    <p id="url-help" className="text-xs text-muted-foreground">
+                        Paste a video URL from YouTube, Vimeo, or other supported platforms
+                    </p>
+                </div>
 
-            <Button
-                type="submit"
-                disabled={isDownloading || !url.trim()}
-                className="w-full"
-                variant="primary"
-            >
-                {isDownloading ? 'Downloading...' : 'Download'}
-            </Button>
-        </form>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Select
+                        label="Video Quality"
+                        value={quality}
+                        onChange={(e) => setQuality(e.target.value as Quality)}
+                        options={qualityOptions}
+                        disabled={isDownloading || audioOnly}
+                    />
+
+                    <div className="flex items-center justify-center">
+                        <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-input hover:bg-accent transition-colors">
+                            <input
+                                type="checkbox"
+                                checked={audioOnly}
+                                onChange={(e) => setAudioOnly(e.target.checked)}
+                                disabled={isDownloading}
+                                className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                aria-describedby="audio-only-help"
+                            />
+                            <div className="flex flex-col">
+                                <span className="text-sm font-medium">Audio Only</span>
+                                <span className="text-xs text-muted-foreground">Download audio track only</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <Button
+                    type="submit"
+                    disabled={isDownloading || !url.trim()}
+                    className="w-full"
+                    variant="primary"
+                    size="lg"
+                    loading={isDownloading}
+                >
+                    <DownloadIcon className="mr-2" size={18} />
+                    {isDownloading ? 'Downloading...' : 'Start Download'}
+                </Button>
+            </form>
+        </Card>
     );
 }
