@@ -11,7 +11,7 @@
     "dist:mac": "node scripts/dist.js mac",
     "dist:linux": "node scripts/dist.js linux",
     "dist:portable": "node scripts/build-portable.js",
-    "clean": "node -e \"const fs=require('fs');['dist','out'].forEach(d=>{if(fs.existsSync(d))fs.rmSync(d,{recursive:true,force:true})})\"",
+    "clean": "node -e \"const fs=require('fs');['dist','release'].forEach(d=>{if(fs.existsSync(d))fs.rmSync(d,{recursive:true,force:true})})\"",
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
     "postinstall": "electron-builder install-app-deps"
@@ -60,7 +60,7 @@
     "productName": "Oxygen",
     "copyright": "Copyright © 2024 rxxuzi",
     "directories": {
-      "output": "out",
+      "output": "release",
       "buildResources": "resources"
     },
     "files": [

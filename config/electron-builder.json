@@ -4,10 +4,11 @@
   "productName": "Oxygen",
   "copyright": "Copyright © 2025 rxxuzi",
   "directories": {
-    "output": "out",
+    "output": "release",
     "buildResources": "resources"
   },
   "files": [
+    "scripts/electron-entry.js",
     "dist/**/*",
     "!dist/**/*.map",
     "package.json"
@@ -37,7 +38,9 @@
     "icon": "resources/icons/icon.ico",
     "publisherName": "rxxuzi",
     "requestedExecutionLevel": "asInvoker",
-    "signAndEditExecutable": false
+    "signAndEditExecutable": false,
+    "artifactName": "${productName}.${ext}",
+    "forceCodeSigning": false
   },
   "nsis": {
     "oneClick": false,

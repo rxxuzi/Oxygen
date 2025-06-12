@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const rootDir = path.join(__dirname, '..');
-const outDir = path.join(rootDir, 'out');
+const outDir = path.join(rootDir, 'release');
 
 console.log('🚀 Building Oxygen Portable...\n');
 

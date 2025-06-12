@@ -7,7 +7,7 @@ const path = require('path');
 class DistributionBuilder {
   constructor() {
     this.rootDir = path.join(__dirname, '..');
-    this.outDir = path.join(this.rootDir, 'out');
+    this.outDir = path.join(this.rootDir, 'release');
     this.distDir = path.join(this.rootDir, 'dist');
   }
 

@@ -64,7 +64,7 @@ This will start both the main process and renderer process with hot reloading.
    npm run dist:portable
    ```
 
-The built files will be in the `out` directory:
+The built files will be in the `release` directory:
 - `Oxygen-Setup-1.0.0.exe` - NSIS installer
 - `Oxygen-Portable-1.0.0.exe` - Portable executable
 - `Oxygen-1.0.0-win.zip` - ZIP archive

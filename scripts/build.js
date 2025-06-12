@@ -74,3 +74,68 @@ try {
 } catch (error) {
     console.log('  Unable to list files');
 }
+
+// Build executable with electron-builder
+console.log('\n📦 Creating executable files...');
+try {
+    // Clean release directory
+    const releaseDir = path.join(__dirname, '../release');
+    if (fs.existsSync(releaseDir)) {
+        console.log('🧹 Cleaning release directory...');
+        fs.rmSync(releaseDir, { recursive: true, force: true });
+    }
+    
+    // Determine platform
+    const platform = process.platform === 'win32' ? 'win' : 
+                    process.platform === 'darwin' ? 'mac' : 
+                    'linux';
+    
+    console.log(`🎯 Building for platform: ${platform}`);
+    
+    // Use electron-builder to create unpacked directory only (faster than full packaging)
+    const builderPath = path.join(__dirname, '../node_modules/.bin/electron-builder');
+    const builderCommand = process.platform === 'win32' ? `"${builderPath}.cmd"` : builderPath;
+    
+    // Build with --dir flag to create unpacked directory only
+    // Add explicit config to ensure icon is used
+    execSync(`${builderCommand} --${platform} --dir -c config/electron-builder.json`, { 
+        stdio: 'inherit',
+        cwd: path.join(__dirname, '..'),
+        env: {
+            ...process.env,
+            // Force electron-builder to rebuild icon cache
+            ELECTRON_BUILDER_CACHE: path.join(__dirname, '..', '.electron-builder-cache')
+        }
+    });
+    
+    console.log('✅ Executable created successfully!');
+    
+    // List output files
+    if (fs.existsSync(releaseDir)) {
+        const files = fs.readdirSync(releaseDir);
+        console.log('\n📂 Release directory contents:');
+        files.forEach(file => {
+            const filePath = path.join(releaseDir, file);
+            const stats = fs.statSync(filePath);
+            if (stats.isDirectory()) {
+                console.log(`  📁 ${file}/`);
+                // List executable in unpacked directory
+                if (file.includes('unpacked')) {
+                    const unpackedFiles = fs.readdirSync(filePath);
+                    const exeFile = unpackedFiles.find(f => f.endsWith('.exe'));
+                    if (exeFile) {
+                        console.log(`     └─ ${exeFile}`);
+                    }
+                }
+            } else {
+                console.log(`  📄 ${file}`);
+            }
+        });
+    }
+    
+} catch (error) {
+    console.error('❌ Failed to create executable:', error.message);
+    console.log('💡 Run "npm run dist" to create full installer package');
+}
+
+console.log('\n✨ Build process complete!');

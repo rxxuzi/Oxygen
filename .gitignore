@@ -14,9 +14,10 @@ CLAUDE.md
 # Build outputs
 dist/
 dist-ssr/
-out/
+release/
 build/
 *.local
+.electron-builder-cache/
 
 # Electron
 .electron/
