@@ -29,4 +29,10 @@ export const IPC_CHANNELS = {
     // Utility
     CHECK_DEPENDENCIES: 'check-dependencies',
     GET_VERSION: 'get-version',
+    
+    // Window control
+    WINDOW_MINIMIZE: 'window:minimize',
+    WINDOW_MAXIMIZE: 'window:maximize',
+    WINDOW_CLOSE: 'window:close',
+    WINDOW_IS_MAXIMIZED: 'window:is-maximized',
 } as const;

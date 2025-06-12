@@ -1,30 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Settings, FileText, Shield } from 'lucide-react';
+import { Download, Settings, FileText, Shield, Minimize2, Maximize2, X, Square } from 'lucide-react';
 import { OxygenIcon } from './components/ui/OxygenIcon';
 import { DownloadForm } from './components/DownloadForm';
 import { ProgressBar } from './components/ProgressBar';
 import { SettingsPanel } from './components/SettingsPanel';
 import { LogsViewer } from './components/LogsViewer';
 import { AuthPanel } from './components/AuthPanel';
-import { Button } from './components/ui/Button';
-import { Card } from './components/ui/card';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { useDownloadStore } from './stores/download-store';
 import { useSettingsStore } from './stores/settings-store';
 
 export default function App() {
     const [activeTab, setActiveTab] = useState('main');
+    const [isMaximized, setIsMaximized] = useState(false);
     const { isDownloading, progress } = useDownloadStore();
     const { loadSettings } = useSettingsStore();
 
     useEffect(() => {
         // Load settings on app start
         loadSettings();
+        
+        // Check if window is maximized
+        const checkMaximized = async () => {
+            const maximized = await window.electron.window.isMaximized();
+            setIsMaximized(maximized);
+        };
+        checkMaximized();
     }, [loadSettings]);
-
-    useEffect(() => {
-        // Set dark mode
-        document.documentElement.classList.add('dark');
-    }, []);
 
     const tabs = [
         { id: 'main', label: 'Download', icon: Download },
@@ -33,146 +35,185 @@ export default function App() {
         { id: 'auth', label: 'Auth', icon: Shield }
     ];
 
+    const handleMinimize = () => {
+        window.electron.window.minimize();
+    };
+
+    const handleMaximize = async () => {
+        await window.electron.window.maximize();
+        const maximized = await window.electron.window.isMaximized();
+        setIsMaximized(maximized);
+    };
+
+    const handleClose = () => {
+        window.electron.window.close();
+    };
+
     return (
-        <div className="min-h-screen bg-background">
-            {/* Header */}
-            <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                <div className="container flex h-14 items-center">
-                    <div className="flex items-center space-x-3">
-                        <OxygenIcon size={32} className="flex-shrink-0" />
-                        <div className="flex flex-col">
-                            <h1 className="text-lg font-semibold">Oxygen</h1>
-                        </div>
-                    </div>
-                    <div className="ml-auto flex items-center space-x-2">
-                        <div className="text-sm text-muted-foreground">
-                            Video & Audio Downloader
-                        </div>
-                    </div>
+        <ErrorBoundary>
+            <div className="h-screen flex flex-col bg-black overflow-hidden select-none">
+            {/* Custom Title Bar with Drag Region */}
+            <div 
+                className="flex items-center h-8 bg-zinc-900 border-b border-zinc-800 relative"
+                style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+            >
+                {/* Left: App Icon and Title */}
+                <div className="flex items-center space-x-3 px-4">
+                    <OxygenIcon size={16} className="text-blue-400" />
+                    <h1 className="text-xs font-medium text-zinc-200">Oxygen</h1>
+                </div>
+                
+                {/* Center: Draggable Area */}
+                <div className="flex-1"></div>
+                
+                {/* Right: Window Controls */}
+                <div 
+                    className="flex items-center"
+                    style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+                >
+                    <button 
+                        onClick={handleMinimize}
+                        className="w-12 h-8 flex items-center justify-center hover:bg-zinc-700/50 transition-colors duration-150"
+                        title="Minimize"
+                    >
+                        <Minimize2 className="w-4 h-4 text-zinc-400 hover:text-zinc-200" />
+                    </button>
+                    <button 
+                        onClick={handleMaximize}
+                        className="w-12 h-8 flex items-center justify-center hover:bg-zinc-700/50 transition-colors duration-150"
+                        title={isMaximized ? "Restore" : "Maximize"}
+                    >
+                        {isMaximized ? (
+                            <Square className="w-4 h-4 text-zinc-400 hover:text-zinc-200" />
+                        ) : (
+                            <Maximize2 className="w-4 h-4 text-zinc-400 hover:text-zinc-200" />
+                        )}
+                    </button>
+                    <button 
+                        onClick={handleClose}
+                        className="w-12 h-8 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors duration-150"
+                        title="Close"
+                    >
+                        <X className="w-4 h-4 text-zinc-400 hover:text-white" />
+                    </button>
                 </div>
             </div>
 
-            {/* Navigation */}
-            <div className="border-b">
-                <div className="container">
-                    <nav className="flex space-x-8 py-4">
+            <div className="flex flex-1 overflow-hidden">
+                {/* Sidebar Navigation */}
+                <div className="w-60 bg-zinc-900 border-r border-zinc-800 flex flex-col">
+                    {/* Navigation */}
+                    <nav className="flex-1 p-3 space-y-1 select-none">
                         {tabs.map((tab) => {
                             const Icon = tab.icon;
                             return (
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`inline-flex items-center space-x-2 text-sm font-medium transition-colors hover:text-foreground/80 ${
+                                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors duration-200 ${
                                         activeTab === tab.id
-                                            ? 'text-foreground border-b-2 border-primary pb-2'
-                                            : 'text-foreground/60'
+                                            ? 'bg-zinc-800/80 text-zinc-100'
+                                            : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
                                     }`}
                                 >
-                                    <Icon className="h-4 w-4" />
-                                    <span>{tab.label}</span>
+                                    <Icon className={`w-5 h-5 ${
+                                        activeTab === tab.id ? 'text-blue-400' : ''
+                                    }`} />
+                                    <span className="font-medium">{tab.label}</span>
                                 </button>
                             );
                         })}
                     </nav>
-                </div>
-            </div>
 
-            {/* Main Content */}
-            <main className="container py-6">
-                {/* Main Tab */}
-                {activeTab === 'main' && (
-                    <div className="space-y-6">
-                        <div className="space-y-2">
-                            <h2 className="text-2xl font-bold tracking-tight">Download</h2>
-                            <p className="text-muted-foreground">
-                                Download videos and audio from various platforms
-                            </p>
-                        </div>
-
-                        <DownloadForm />
-
-                        {isDownloading && (
-                            <Card className="p-6">
-                                <div className="space-y-4">
-                                    <h3 className="font-semibold">Download Progress</h3>
-                                    <ProgressBar progress={progress} />
-                                </div>
-                            </Card>
-                        )}
-
-                        <Card className="p-6">
-                            <div className="space-y-4">
+                    {/* Download Progress in Sidebar */}
+                    {isDownloading && (
+                        <div className="p-3 border-t border-zinc-800">
+                            <div className="bg-zinc-800/80 rounded-lg p-4 space-y-3 border border-zinc-700/50">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="font-semibold">Console Output</h3>
-                                    <div className="flex space-x-2">
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            onClick={() => useDownloadStore.getState().clearLogs()}
-                                        >
-                                            Clear
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            onClick={() => {
-                                                const { settings } = useSettingsStore.getState();
-                                                window.electron.shell.openPath(settings.videoOutputPath);
-                                            }}
-                                        >
-                                            Open Folder
-                                        </Button>
-                                    </div>
+                                    <span className="text-xs font-medium text-zinc-300">Downloading</span>
+                                    <span className="text-xs text-blue-400 font-mono">{progress?.percent || 0}%</span>
                                 </div>
-                                <div className="rounded-lg border bg-muted/50 p-4">
-                                    <pre className="text-sm text-muted-foreground whitespace-pre-wrap font-mono max-h-48 overflow-y-auto">
-                                        {useDownloadStore.getState().logs.join('\n') || 'Download logs will appear here...'}
-                                    </pre>
+                                <ProgressBar progress={progress} />
+                                <div className="text-xs text-zinc-500 truncate">
+                                    {progress?.filename || 'Preparing...'}
                                 </div>
                             </div>
-                        </Card>
-                    </div>
-                )}
-
-                {/* Settings Tab */}
-                {activeTab === 'settings' && (
-                    <div className="space-y-6">
-                        <div>
-                            <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
-                            <p className="text-muted-foreground">
-                                Configure download preferences and output settings
-                            </p>
                         </div>
-                        <SettingsPanel />
-                    </div>
-                )}
+                    )}
+                </div>
 
-                {/* Logs Tab */}
-                {activeTab === 'logs' && (
-                    <div className="space-y-6">
-                        <div>
-                            <h2 className="text-2xl font-bold tracking-tight">Download History</h2>
-                            <p className="text-muted-foreground">
-                                View and manage your download history
-                            </p>
-                        </div>
-                        <LogsViewer />
-                    </div>
-                )}
+                {/* Main Content Area */}
+                <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-zinc-900 to-black">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                        <div className="p-8 space-y-8 max-w-5xl mx-auto">
+                            {/* Main Download Tab */}
+                            {activeTab === 'main' && (
+                                <div className="space-y-8">
+                                    <div className="text-center space-y-2">
+                                        <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
+                                            Download Videos & Audio
+                                        </h2>
+                                        <p className="text-zinc-400 text-lg">
+                                            Download content from YouTube, Vimeo, and other supported platforms
+                                        </p>
+                                    </div>
+                                    
+                                    <DownloadForm />
+                                </div>
+                            )}
 
-                {/* Auth Tab */}
-                {activeTab === 'auth' && (
-                    <div className="space-y-6">
-                        <div>
-                            <h2 className="text-2xl font-bold tracking-tight">Authentication</h2>
-                            <p className="text-muted-foreground">
-                                Manage authentication for various platforms
-                            </p>
+                            {/* Settings Tab */}
+                            {activeTab === 'settings' && (
+                                <div className="space-y-8">
+                                    <div className="text-center space-y-2">
+                                        <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
+                                            Settings
+                                        </h2>
+                                        <p className="text-zinc-400 text-lg">
+                                            Configure download preferences and output settings
+                                        </p>
+                                    </div>
+                                    
+                                    <SettingsPanel />
+                                </div>
+                            )}
+
+                            {/* Logs Tab */}
+                            {activeTab === 'logs' && (
+                                <div className="space-y-8">
+                                    <div className="text-center space-y-2">
+                                        <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
+                                            Download Logs
+                                        </h2>
+                                        <p className="text-zinc-400 text-lg">
+                                            View and manage your download history
+                                        </p>
+                                    </div>
+                                    
+                                    <LogsViewer />
+                                </div>
+                            )}
+
+                            {/* Auth Tab */}
+                            {activeTab === 'auth' && (
+                                <div className="space-y-8">
+                                    <div className="text-center space-y-2">
+                                        <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
+                                            Authentication
+                                        </h2>
+                                        <p className="text-zinc-400 text-lg">
+                                            Manage authentication for various platforms
+                                        </p>
+                                    </div>
+                                    
+                                    <AuthPanel />
+                                </div>
+                            )}
                         </div>
-                        <AuthPanel />
                     </div>
-                )}
-            </main>
+                </div>
+            </div>
         </div>
+        </ErrorBoundary>
     );
 }

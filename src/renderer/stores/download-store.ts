@@ -75,5 +75,18 @@ export const useDownloadStore = create<DownloadStore>((set, get) => ({
 
     clearLogs: () => {
         set({ logs: [] });
-    }
+    },
+    
+    // Cleanup function for app shutdown
+    cleanup: async () => {
+        const { isDownloading } = get();
+        if (isDownloading) {
+            try {
+                await window.electron.invoke(IPC_CHANNELS.DOWNLOAD_CANCEL);
+            } catch (error) {
+                // Ignore errors during shutdown
+            }
+        }
+        set({ isDownloading: false, currentUrl: null, progress: null });
+    },
 }));

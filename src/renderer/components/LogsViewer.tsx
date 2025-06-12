@@ -50,11 +50,11 @@ export function LogsViewer() {
                     <table className="w-full">
                         <thead>
                             <tr className="border-b border-border">
-                                <th className="text-left p-3 font-medium text-foreground">Result</th>
-                                <th className="text-left p-3 font-medium text-foreground">Date</th>
-                                <th className="text-left p-3 font-medium text-foreground">URL</th>
-                                <th className="text-left p-3 font-medium text-foreground">Folder</th>
-                                <th className="text-left p-3 font-medium text-foreground">Details</th>
+                                <th className="text-left p-3 font-medium text-zinc-300">Result</th>
+                                <th className="text-left p-3 font-medium text-zinc-300">Date</th>
+                                <th className="text-left p-3 font-medium text-zinc-300">URL</th>
+                                <th className="text-left p-3 font-medium text-zinc-300">Folder</th>
+                                <th className="text-left p-3 font-medium text-zinc-300">Details</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -7,7 +7,7 @@ interface ProgressBarProps {
 
 export function ProgressBar({ progress }: ProgressBarProps) {
     const progressColor = useMemo(() => {
-        if (!progress) return 'bg-red-500';
+        if (!progress || typeof progress.percent !== 'number') return 'bg-gray-500';
 
         const percent = progress.percent;
 
@@ -35,23 +35,23 @@ export function ProgressBar({ progress }: ProgressBarProps) {
         <div className="space-y-2">
             <div className="flex justify-between text-sm text-muted-foreground">
                 <span>{progress.filename || 'Downloading...'}</span>
-                <span>{progress.percent.toFixed(1)}%</span>
+                <span>{(progress.percent || 0).toFixed(1)}%</span>
             </div>
 
             <div className="w-full bg-surface rounded-full h-2 overflow-hidden">
                 <div
                     className={`h-full transition-all duration-300 ${progressColor}`}
-                    style={{ width: `${progress.percent}%` }}
+                    style={{ width: `${(progress.percent || 0)}%` }}
                 />
             </div>
 
             <div className="flex justify-between text-xs text-muted-foreground">
-        <span>
-          {formatBytes(progress.downloadedBytes)} / {formatBytes(progress.totalBytes)}
-        </span>
                 <span>
-          {progress.speed} • ETA: {progress.eta}
-        </span>
+                    {formatBytes(progress.downloadedBytes || 0)} / {formatBytes(progress.totalBytes || 0)}
+                </span>
+                <span>
+                    {progress.speed || '0 B/s'} • ETA: {progress.eta || 'Unknown'}
+                </span>
             </div>
         </div>
     );

@@ -29,6 +29,7 @@ function createWindow() {
         height: 800,
         minWidth: 800,
         minHeight: 600,
+        frame: false, // Remove default title bar
         webPreferences: {
             preload: path.join(__dirname, '../preload/preload.js'),
             contextIsolation: true,
@@ -38,6 +39,13 @@ function createWindow() {
         icon: path.join(__dirname, '../../resources/icons/icon.ico'),
         title: 'Oxygen',
         show: false,
+        // Additional frameless window options
+        transparent: false,
+        backgroundColor: '#000000',
+        resizable: true,
+        maximizable: true,
+        minimizable: true,
+        closable: true,
     });
 
     console.log('Oxygen: Window created');
@@ -50,7 +58,7 @@ function createWindow() {
 
     // Load the app
     if (isDev) {
-        const url = 'http://localhost:5173';
+        const url = 'http://localhost:9800';
         console.log('Oxygen: Loading dev URL:', url);
         mainWindow.loadURL(url).catch(err => {
             console.error('Oxygen: Failed to load URL:', err);
@@ -91,8 +99,11 @@ function createWindow() {
         });
     }
 
-    // Setup menu
-    setupMenu(mainWindow);
+    // Setup menu (disabled for minimal design)
+    // setupMenu(mainWindow);
+    
+    // Set empty menu for minimal design
+    mainWindow.setMenu(null);
 }
 
 // Error handling
@@ -137,7 +148,15 @@ app.on('window-all-closed', () => {
 // Handle app quit to ensure clean shutdown
 app.on('before-quit', (event) => {
     console.log('Oxygen: Before quit event');
-    // Ensure all windows are closed
+    
+    // Cancel any ongoing downloads to prevent orphaned processes
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        try {
+            mainWindow.webContents.send('app:before-quit');
+        } catch (error) {
+            console.debug('Error sending before-quit event:', error);
+        }
+    }
     BrowserWindow.getAllWindows().forEach(window => {
         window.destroy();
     });

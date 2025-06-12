@@ -59,6 +59,14 @@ const electronAPI = {
     dialog: {
         openFolder: () => ipcRenderer.invoke(IPC_CHANNELS.DIALOG_OPEN_FOLDER),
     },
+
+    // Window control API
+    window: {
+        minimize: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_MINIMIZE),
+        maximize: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_MAXIMIZE),
+        close: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_CLOSE),
+        isMaximized: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_IS_MAXIMIZED),
+    },
 };
 
 // Expose the API to the renderer process

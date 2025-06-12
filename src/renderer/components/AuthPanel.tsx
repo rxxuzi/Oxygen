@@ -80,7 +80,7 @@ export function AuthPanel() {
 
                 <form onSubmit={handleCookieSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">
                             Website URL
                         </label>
                         <Input
@@ -92,7 +92,7 @@ export function AuthPanel() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">
                             Select cookies.txt file
                         </label>
                         <FileInput
@@ -118,7 +118,7 @@ export function AuthPanel() {
 
                 <form onSubmit={handlePasswordSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">
                             Website URL
                         </label>
                         <Input
@@ -131,7 +131,7 @@ export function AuthPanel() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-foreground mb-2">
+                            <label className="block text-sm font-medium text-zinc-300 mb-2">
                                 Username
                             </label>
                             <Input
@@ -143,7 +143,7 @@ export function AuthPanel() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-foreground mb-2">
+                            <label className="block text-sm font-medium text-zinc-300 mb-2">
                                 Password
                             </label>
                             <Input
@@ -169,10 +169,10 @@ export function AuthPanel() {
                     <table className="w-full">
                         <thead>
                             <tr className="border-b border-border">
-                                <th className="text-left p-3 font-medium text-foreground">Status</th>
-                                <th className="text-left p-3 font-medium text-foreground">Domain</th>
-                                <th className="text-left p-3 font-medium text-foreground">Type</th>
-                                <th className="text-left p-3 font-medium text-foreground">Actions</th>
+                                <th className="text-left p-3 font-medium text-zinc-300">Status</th>
+                                <th className="text-left p-3 font-medium text-zinc-300">Domain</th>
+                                <th className="text-left p-3 font-medium text-zinc-300">Type</th>
+                                <th className="text-left p-3 font-medium text-zinc-300">Actions</th>
                             </tr>
                         </thead>
                         <tbody>

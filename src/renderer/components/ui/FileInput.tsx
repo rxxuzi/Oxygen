@@ -48,11 +48,11 @@ export const FileInput = forwardRef<HTMLInputElement, FileInputProps>(
           <div className="flex-1 min-w-0">
             {fileName ? (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-foreground truncate">{fileName}</span>
+                <span className="text-sm text-zinc-300 truncate">{fileName}</span>
                 <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" title="File selected"/>
               </div>
             ) : (
-              <span className="text-sm text-muted-foreground">No file selected</span>
+              <span className="text-sm text-zinc-400">No file selected</span>
             )}
           </div>
         </div>

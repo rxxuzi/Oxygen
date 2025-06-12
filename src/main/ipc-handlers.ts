@@ -18,12 +18,15 @@ export function setupIpcHandlers(configManager: ConfigManager, authManager: Auth
             if (!window) throw new Error('Window not found');
 
             const result = await downloader.download(url, options, (progress) => {
-                // Normalize Unicode characters in filename for IPC transmission
-                const normalizedProgress = {
-                    ...progress,
-                    filename: progress.filename ? progress.filename.normalize('NFC') : progress.filename
-                };
-                window.webContents.send(IPC_CHANNELS.DOWNLOAD_PROGRESS, normalizedProgress);
+                // Check if window is still available before sending progress
+                if (window && !window.isDestroyed()) {
+                    // Normalize Unicode characters in filename for IPC transmission
+                    const normalizedProgress = {
+                        ...progress,
+                        filename: progress.filename ? progress.filename.normalize('NFC') : progress.filename
+                    };
+                    window.webContents.send(IPC_CHANNELS.DOWNLOAD_PROGRESS, normalizedProgress);
+                }
             });
 
             // Save to logs
@@ -126,5 +129,30 @@ export function setupIpcHandlers(configManager: ConfigManager, authManager: Auth
     ipcMain.handle(IPC_CHANNELS.GET_VERSION, async () => {
         const { app } = await import('electron');
         return app.getVersion();
+    });
+
+    // Window control handlers
+    ipcMain.handle(IPC_CHANNELS.WINDOW_MINIMIZE, async (event) => {
+        const window = BrowserWindow.fromWebContents(event.sender);
+        window?.minimize();
+    });
+
+    ipcMain.handle(IPC_CHANNELS.WINDOW_MAXIMIZE, async (event) => {
+        const window = BrowserWindow.fromWebContents(event.sender);
+        if (window?.isMaximized()) {
+            window.unmaximize();
+        } else {
+            window?.maximize();
+        }
+    });
+
+    ipcMain.handle(IPC_CHANNELS.WINDOW_CLOSE, async (event) => {
+        const window = BrowserWindow.fromWebContents(event.sender);
+        window?.close();
+    });
+
+    ipcMain.handle(IPC_CHANNELS.WINDOW_IS_MAXIMIZED, async (event) => {
+        const window = BrowserWindow.fromWebContents(event.sender);
+        return window?.isMaximized() || false;
     });
 }

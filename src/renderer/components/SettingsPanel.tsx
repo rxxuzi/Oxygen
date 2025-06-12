@@ -47,7 +47,7 @@ export function SettingsPanel() {
                     />
 
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">Output Path</label>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Output Path</label>
                         <div className="flex gap-2">
                             <Input
                                 type="text"
@@ -76,7 +76,7 @@ export function SettingsPanel() {
                     />
 
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">Output Path</label>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Output Path</label>
                         <div className="flex gap-2">
                             <Input
                                 type="text"
@@ -98,7 +98,7 @@ export function SettingsPanel() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">Segments</label>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Segments</label>
                         <Input
                             type="number"
                             min="1"
@@ -109,7 +109,7 @@ export function SettingsPanel() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">Retries</label>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Retries</label>
                         <Input
                             type="number"
                             min="0"
@@ -119,7 +119,7 @@ export function SettingsPanel() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">Buffer Size</label>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Buffer Size</label>
                         <Input
                             type="text"
                             value={settings.bufferSize}
@@ -135,34 +135,34 @@ export function SettingsPanel() {
                 <h3 className="text-lg font-semibold mb-4">Other Settings</h3>
 
                 <div className="space-y-4">
-                    <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-input hover:bg-accent transition-colors">
+                    <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-zinc-700/50 hover:bg-zinc-800/50 transition-colors">
                         <input
                             type="checkbox"
                             checked={settings.writeThumbnail}
                             onChange={(e) => updateSettings({ writeThumbnail: e.target.checked })}
-                            className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                            className="w-4 h-4 rounded border-zinc-700 text-blue-600 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-0 bg-zinc-900"
                         />
                         <div className="flex flex-col">
                             <span className="text-sm font-medium">Write thumbnail</span>
-                            <span className="text-xs text-muted-foreground">Save thumbnail image separately</span>
+                            <span className="text-xs text-zinc-400">Save thumbnail image separately</span>
                         </div>
                     </label>
 
-                    <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-input hover:bg-accent transition-colors">
+                    <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-zinc-700/50 hover:bg-zinc-800/50 transition-colors">
                         <input
                             type="checkbox"
                             checked={settings.embedThumbnail}
                             onChange={(e) => updateSettings({ embedThumbnail: e.target.checked })}
-                            className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                            className="w-4 h-4 rounded border-zinc-700 text-blue-600 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-0 bg-zinc-900"
                         />
                         <div className="flex flex-col">
                             <span className="text-sm font-medium">Embed thumbnail</span>
-                            <span className="text-xs text-muted-foreground">Embed thumbnail in media file</span>
+                            <span className="text-xs text-zinc-400">Embed thumbnail in media file</span>
                         </div>
                     </label>
 
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">Proxy Server</label>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Proxy Server</label>
                         <Input
                             type="text"
                             value={settings.proxy}
@@ -172,7 +172,7 @@ export function SettingsPanel() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">Subtitle Languages</label>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Subtitle Languages</label>
                         <Input
                             type="text"
                             value={settings.subtitles}

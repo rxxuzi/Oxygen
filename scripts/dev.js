@@ -96,11 +96,11 @@ function runCommand(command, args, label, color) {
 
 // Main function
 async function main() {
-    // Check and kill port 5173 if in use
-    const portInUse = await isPortInUse(5173);
+    // Check and kill port 9800 if in use
+    const portInUse = await isPortInUse(9800);
     if (portInUse) {
-        console.log(`${colors.yellow}Port 5173 is in use, attempting to free it...${colors.reset}`);
-        await killPort(5173);
+        console.log(`${colors.yellow}Port 9800 is in use, attempting to free it...${colors.reset}`);
+        await killPort(9800);
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
@@ -212,7 +212,7 @@ process.on('SIGTERM', cleanup);
 
 // Instructions
 console.log(`${colors.bright}📋 Development server starting...${colors.reset}`);
-console.log(`${colors.cyan}• Vite server: http://localhost:5173${colors.reset}`);
+console.log(`${colors.cyan}• Vite server: http://localhost:9800${colors.reset}`);
 console.log(`${colors.cyan}• Electron will start after TypeScript compilation${colors.reset}`);
 console.log(`${colors.cyan}• Press Ctrl+C to stop all processes${colors.reset}\n`);
 

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDownloadStore } from '../stores/download-store';
 import { useSettingsStore } from '../stores/settings-store';
 import { useAuthStore } from '../stores/auth-store';
 import { Input } from './ui/Input';
 import { Select } from './ui/Select';
 import { Button } from './ui/Button';
-import { Card } from './ui/card';
+import { Panel, PanelContent } from './ui/Panel';
 import { DownloadIcon } from './ui/OxygenIcon';
 import { Quality } from '../../shared/types';
 
@@ -17,6 +17,16 @@ export function DownloadForm() {
     const { isDownloading, startDownload } = useDownloadStore();
     const { settings } = useSettingsStore();
     const { getAuthForUrl } = useAuthStore();
+
+    // Listen for paste URL events from context menu
+    useEffect(() => {
+        const handlePasteURL = (event: CustomEvent) => {
+            setUrl(event.detail);
+        };
+
+        window.addEventListener('pasteURL', handlePasteURL as EventListener);
+        return () => window.removeEventListener('pasteURL', handlePasteURL as EventListener);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -58,10 +68,11 @@ export function DownloadForm() {
     ];
 
     return (
-        <Card className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
+        <Panel className="transition-all duration-300 ease-out">
+            <PanelContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                    <label htmlFor="url-input" className="block text-sm font-medium text-foreground">
+                    <label htmlFor="url-input" className="block text-sm font-medium text-zinc-300">
                         Video URL
                     </label>
                     <Input
@@ -73,8 +84,10 @@ export function DownloadForm() {
                         disabled={isDownloading}
                         className="w-full text-base"
                         aria-describedby="url-help"
+                        enableClipboardPaste={true}
+                        onClipboardPaste={(text) => setUrl(text)}
                     />
-                    <p id="url-help" className="text-xs text-muted-foreground">
+                    <p id="url-help" className="text-xs text-zinc-400">
                         Paste a video URL from YouTube, Vimeo, or other supported platforms
                     </p>
                 </div>
@@ -89,18 +102,18 @@ export function DownloadForm() {
                     />
 
                     <div className="flex items-center justify-center">
-                        <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-input hover:bg-accent transition-colors">
+                        <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-zinc-700/50 hover:bg-zinc-800/50 transition-colors">
                             <input
                                 type="checkbox"
                                 checked={audioOnly}
                                 onChange={(e) => setAudioOnly(e.target.checked)}
                                 disabled={isDownloading}
-                                className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                className="w-4 h-4 rounded border-zinc-700 text-blue-600 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-0 bg-zinc-900"
                                 aria-describedby="audio-only-help"
                             />
                             <div className="flex flex-col">
                                 <span className="text-sm font-medium">Audio Only</span>
-                                <span className="text-xs text-muted-foreground">Download audio track only</span>
+                                <span className="text-xs text-zinc-400">Download audio track only</span>
                             </div>
                         </label>
                     </div>
@@ -118,6 +131,7 @@ export function DownloadForm() {
                     {isDownloading ? 'Downloading...' : 'Start Download'}
                 </Button>
             </form>
-        </Card>
+            </PanelContent>
+        </Panel>
     );
 }
