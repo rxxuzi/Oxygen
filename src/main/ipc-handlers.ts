@@ -18,7 +18,12 @@ export function setupIpcHandlers(configManager: ConfigManager, authManager: Auth
             if (!window) throw new Error('Window not found');
 
             const result = await downloader.download(url, options, (progress) => {
-                window.webContents.send(IPC_CHANNELS.DOWNLOAD_PROGRESS, progress);
+                // Normalize Unicode characters in filename for IPC transmission
+                const normalizedProgress = {
+                    ...progress,
+                    filename: progress.filename ? progress.filename.normalize('NFC') : progress.filename
+                };
+                window.webContents.send(IPC_CHANNELS.DOWNLOAD_PROGRESS, normalizedProgress);
             });
 
             // Save to logs
@@ -27,7 +32,7 @@ export function setupIpcHandlers(configManager: ConfigManager, authManager: Auth
                 result: 'success',
                 date: new Date().toISOString(),
                 folder: options.outputPath,
-                filename: result.filename
+                filename: result.filename ? result.filename.normalize('NFC') : result.filename
             });
 
             return result;

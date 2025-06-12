@@ -1,6 +1,7 @@
 import {spawn} from 'child_process';
 import path from 'path';
 import fs from 'fs/promises';
+import util from 'util';
 import {app} from 'electron';
 import {DownloadOptions, DownloadProgress, DownloadResult} from '../shared/types';
 
@@ -88,7 +89,13 @@ export class Downloader {
     ): Promise<DownloadResult> {
         return new Promise<DownloadResult>((resolve, reject) => {
             this.currentProcess = spawn(this.ytDlpPath, args, {
-                env: { ...process.env, FFMPEG_PATH: this.ffmpegPath },
+                env: { 
+                    ...process.env, 
+                    FFMPEG_PATH: this.ffmpegPath,
+                    // Ensure UTF-8 encoding on Windows
+                    PYTHONIOENCODING: 'utf-8',
+                    LC_ALL: 'en_US.UTF-8'
+                },
                 stdio: ['ignore', 'pipe', 'pipe']
             });
 
@@ -196,11 +203,14 @@ export class Downloader {
             };
         }
 
-        // Parse filename
+        // Parse filename - handle Unicode characters properly
         const filenameMatch = output.match(/\[download\] Destination: (.+)/);
         if (filenameMatch) {
+            const fullPath = filenameMatch[1].trim();
+            // Normalize Unicode characters and extract basename
+            const filename = path.basename(fullPath).normalize('NFC');
             return {
-                filename: path.basename(filenameMatch[1])
+                filename: filename
             };
         }
 
@@ -360,10 +370,13 @@ export class Downloader {
         args.push('--newline');
         // Remove --update to prevent cookie loading on startup
         
+        // Unicode and encoding options for proper filename handling
+        args.push('--encoding', 'UTF-8');
+        
         // Explicitly disable browser cookie extraction to prevent permission issues
         args.push('--no-cookies-from-browser');
         
-        // Output path and filename
+        // Output path and filename - use restrictfilenames for better Unicode support
         const outputTemplate = path.join(options.outputPath, '%(title)s.%(ext)s');
         args.push('-o', outputTemplate);
         

@@ -55,7 +55,7 @@ export function SettingsPanel() {
                                 onChange={(e) => updateSettings({ videoOutputPath: e.target.value })}
                                 className="flex-1"
                             />
-                            <Button onClick={() => handleBrowse('video')} variant="outline">
+                            <Button onClick={() => handleBrowse('video')} variant="secondary">
                                 Browse
                             </Button>
                         </div>
@@ -84,7 +84,7 @@ export function SettingsPanel() {
                                 onChange={(e) => updateSettings({ audioOutputPath: e.target.value })}
                                 className="flex-1"
                             />
-                            <Button onClick={() => handleBrowse('audio')} variant="outline">
+                            <Button onClick={() => handleBrowse('audio')} variant="secondary">
                                 Browse
                             </Button>
                         </div>
@@ -184,7 +184,7 @@ export function SettingsPanel() {
             </Card>
 
             <Card className="p-6">
-                <Button onClick={resetSettings} variant="outline" className="w-full">
+                <Button onClick={resetSettings} variant="secondary" className="w-full">
                     Reset to Defaults
                 </Button>
             </Card>

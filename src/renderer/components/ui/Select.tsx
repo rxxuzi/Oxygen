@@ -22,7 +22,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         return (
             <div className="w-full">
                 {label && (
-                    <label htmlFor={selectId} className="block text-sm font-medium text-foreground mb-2">
+                    <label htmlFor={selectId} className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
                         {label}
                     </label>
                 )}
@@ -31,11 +31,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
                         ref={ref}
                         id={selectId}
                         className={cn(
-                            "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm ring-offset-background",
-                            "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                            "flex h-9 w-full rounded-md border border-zinc-200 bg-white px-3 py-1 pr-10 text-sm shadow-sm transition-colors",
+                            "focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2",
                             "disabled:cursor-not-allowed disabled:opacity-50",
-                            "appearance-none cursor-pointer",
-                            error && "border-destructive focus:ring-destructive",
+                            "appearance-none cursor-pointer dark:border-zinc-800 dark:bg-zinc-950 dark:focus:ring-zinc-300",
+                            error && "border-red-500 focus:ring-red-500",
                             className
                         )}
                         {...props}
@@ -45,21 +45,21 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
                                 key={option.value}
                                 value={option.value}
                                 disabled={option.disabled}
-                                className="bg-background text-foreground"
+                                className="bg-white text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50"
                             >
                                 {option.label}
                             </option>
                         ))}
                     </select>
                     <ChevronDownIcon 
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none" 
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500 dark:text-zinc-400 pointer-events-none" 
                         size={16} 
                     />
                 </div>
                 {helperText && (
                     <p className={cn(
                         "text-xs mt-1",
-                        error ? 'text-destructive' : 'text-muted-foreground'
+                        error ? 'text-red-500' : 'text-zinc-500 dark:text-zinc-400'
                     )}>
                         {helperText}
                     </p>

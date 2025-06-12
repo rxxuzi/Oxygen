@@ -6,6 +6,12 @@ import { ConfigManager } from './config';
 import { AuthManager } from './auth-manager';
 import Store from 'electron-store';
 
+// Set UTF-8 encoding for console output on Windows
+if (process.platform === 'win32') {
+    process.stdout.setEncoding('utf8');
+    process.stderr.setEncoding('utf8');
+}
+
 console.log('Oxygen: Starting main process...');
 console.log('Oxygen: __dirname:', __dirname);
 
@@ -49,7 +55,11 @@ function createWindow() {
         mainWindow.loadURL(url).catch(err => {
             console.error('Oxygen: Failed to load URL:', err);
         });
-        mainWindow.webContents.openDevTools();
+        
+        // Open DevTools after content is loaded to avoid errors
+        mainWindow.webContents.once('did-finish-load', () => {
+            mainWindow?.webContents.openDevTools();
+        });
     } else {
         const indexPath = path.join(__dirname, '../renderer/index.html');
         console.log('Oxygen: Loading file:', indexPath);
@@ -69,6 +79,17 @@ function createWindow() {
         shell.openExternal(url);
         return { action: 'deny' };
     });
+
+    // Suppress DevTools errors in development
+    if (isDev) {
+        mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+            // Filter out DevTools-related errors
+            if (sourceId && sourceId.includes('devtools://') && message.includes('Failed to fetch')) {
+                event.preventDefault();
+                return;
+            }
+        });
+    }
 
     // Setup menu
     setupMenu(mainWindow);

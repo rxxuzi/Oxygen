@@ -33,10 +33,10 @@ export function LogsViewer() {
         <div className="space-y-6">
             <Card className="p-6">
                 <div className="flex flex-wrap gap-3">
-                    <Button onClick={openLogsFolder} variant="outline">
+                    <Button onClick={openLogsFolder} variant="secondary">
                         Open Logs Folder
                     </Button>
-                    <Button onClick={handleLoadLogs} variant="outline" disabled={isLoading} loading={isLoading}>
+                    <Button onClick={handleLoadLogs} variant="secondary" disabled={isLoading} loading={isLoading}>
                         {isLoading ? 'Loading...' : 'Reload Logs'}
                     </Button>
                     <Button onClick={handleClearLogs} variant="destructive">

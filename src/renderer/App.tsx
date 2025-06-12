@@ -106,14 +106,14 @@ export default function App() {
                                     <h3 className="font-semibold">Console Output</h3>
                                     <div className="flex space-x-2">
                                         <Button
-                                            variant="outline"
+                                            variant="secondary"
                                             size="sm"
                                             onClick={() => useDownloadStore.getState().clearLogs()}
                                         >
                                             Clear
                                         </Button>
                                         <Button
-                                            variant="outline"
+                                            variant="secondary"
                                             size="sm"
                                             onClick={() => {
                                                 const { settings } = useSettingsStore.getState();
