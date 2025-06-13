@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Download, Settings, FileText, Shield, Minimize2, Maximize2, X, Square } from 'lucide-react';
 import { OxygenIcon } from './components/ui/OxygenIcon';
 import { DownloadForm } from './components/DownloadForm';
-import { ProgressBar } from './components/ProgressBar';
 import { SettingsPanel } from './components/SettingsPanel';
 import { LogsViewer } from './components/LogsViewer';
 import { AuthPanel } from './components/AuthPanel';
@@ -125,16 +124,15 @@ export default function App() {
                         })}
                     </nav>
 
-                    {/* Download Progress in Sidebar */}
+                    {/* Download Status in Sidebar */}
                     {isDownloading && (
                         <div className="p-3 border-t border-zinc-800">
-                            <div className="bg-zinc-800/80 rounded-lg p-4 space-y-3 border border-zinc-700/50">
+                            <div className="bg-zinc-800/80 rounded-lg p-4 border border-zinc-700/50">
                                 <div className="flex items-center justify-between">
                                     <span className="text-xs font-medium text-zinc-300">Downloading</span>
                                     <span className="text-xs text-blue-400 font-mono">{progress?.percent || 0}%</span>
                                 </div>
-                                <ProgressBar progress={progress} />
-                                <div className="text-xs text-zinc-500 truncate">
+                                <div className="text-xs text-zinc-500 truncate mt-2">
                                     {progress?.filename || 'Preparing...'}
                                 </div>
                             </div>

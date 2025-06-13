@@ -6,6 +6,8 @@ import { Input } from './ui/Input';
 import { Select } from './ui/Select';
 import { Button } from './ui/Button';
 import { Panel, PanelContent } from './ui/Panel';
+import { Accordion } from './ui/Accordion';
+import { ProgressBar } from './ProgressBar';
 import { DownloadIcon } from './ui/OxygenIcon';
 import { Quality } from '../../shared/types';
 
@@ -14,7 +16,7 @@ export function DownloadForm() {
     const [audioOnly, setAudioOnly] = useState(false);
     const [quality, setQuality] = useState<Quality>('best');
 
-    const { isDownloading, startDownload } = useDownloadStore();
+    const { isDownloading, progress, logs, startDownload, cancelDownload } = useDownloadStore();
     const { settings } = useSettingsStore();
     const { getAuthForUrl } = useAuthStore();
 
@@ -119,19 +121,101 @@ export function DownloadForm() {
                     </div>
                 </div>
 
-                <Button
-                    type="submit"
-                    disabled={isDownloading || !url.trim()}
-                    className="w-full"
-                    variant="primary"
-                    size="lg"
-                    loading={isDownloading}
-                >
-                    <DownloadIcon className="mr-2" size={18} />
-                    {isDownloading ? 'Downloading...' : 'Start Download'}
-                </Button>
+                <div className="flex gap-3">
+                    <Button
+                        type="submit"
+                        disabled={isDownloading || !url.trim()}
+                        className="flex-1"
+                        variant="primary"
+                        size="lg"
+                        loading={isDownloading}
+                    >
+                        <DownloadIcon className="mr-2" size={18} />
+                        {isDownloading ? 'Downloading...' : 'Start Download'}
+                    </Button>
+                    
+                    {isDownloading && (
+                        <Button
+                            type="button"
+                            onClick={cancelDownload}
+                            variant="destructive"
+                            size="lg"
+                            className="px-6"
+                        >
+                            Cancel
+                        </Button>
+                    )}
+                </div>
             </form>
+
+            {/* Progress Section */}
+            {isDownloading && progress && (
+                <div className="mt-6 space-y-4">
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-sm font-medium text-zinc-200">Download Progress</h3>
+                            <span className="text-xs text-zinc-400">{(progress.percent || 0).toFixed(1)}%</span>
+                        </div>
+                        <ProgressBar progress={progress} />
+                        {progress.filename && (
+                            <p className="text-xs text-zinc-400 truncate">{progress.filename}</p>
+                        )}
+                    </div>
+                    
+                    {/* Status Details Accordion */}
+                    <Accordion title="Download Details" className="mt-4">
+                        <div className="space-y-3 text-xs">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <span className="text-zinc-400">Speed:</span>
+                                    <span className="ml-2 text-zinc-200">{progress.speed || '0 B/s'}</span>
+                                </div>
+                                <div>
+                                    <span className="text-zinc-400">ETA:</span>
+                                    <span className="ml-2 text-zinc-200">{progress.eta || 'Unknown'}</span>
+                                </div>
+                                <div>
+                                    <span className="text-zinc-400">Downloaded:</span>
+                                    <span className="ml-2 text-zinc-200">
+                                        {formatBytes(progress.downloadedBytes || 0)}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className="text-zinc-400">Total:</span>
+                                    <span className="ml-2 text-zinc-200">
+                                        {formatBytes(progress.totalBytes || 0)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </Accordion>
+
+                    {/* Console Logs Accordion */}
+                    {logs.length > 0 && (
+                        <Accordion title="Console Output">
+                            <div className="bg-zinc-950/50 rounded-lg p-3 max-h-32 overflow-y-auto custom-scrollbar">
+                                <div className="space-y-1 text-xs font-mono">
+                                    {logs.slice(-10).map((log, index) => (
+                                        <div key={index} className="text-zinc-300">
+                                            {log}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </Accordion>
+                    )}
+                </div>
+            )}
             </PanelContent>
         </Panel>
     );
+}
+
+// Helper function for formatting bytes
+function formatBytes(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
