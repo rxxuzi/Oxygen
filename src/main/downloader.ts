@@ -171,8 +171,9 @@ export class Downloader {
             args.push('-f', 'bestaudio/best');
         } else {
             if (options.videoFormat === 'mp4') {
-                args.push('-f', 'bestvideo[ext=mp4][height<=1080]+bestaudio/bestvideo[height<=1080]+bestaudio/best');
+                args.push('-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best');
                 args.push('--merge-output-format', 'mp4');
+                args.push('--postprocessor-args', 'ffmpeg:-c:v copy -c:a aac -avoid_negative_ts make_zero -movflags +faststart');
             } else {
                 args.push('-f', 'bestvideo[height<=1080]+bestaudio/best');
                 if (options.videoFormat !== 'auto') {
@@ -342,9 +343,10 @@ export class Downloader {
             if (options.videoFormat === 'auto') {
                 args.push('-f', 'bestvideo[height<=720]+bestaudio/best[height<=720]');
             } else if (options.videoFormat === 'mp4') {
-                args.push('-f', 'bestvideo[ext=mp4][height<=720]+bestaudio[ext=m4a]/bestvideo[height<=720]+bestaudio/best[height<=720]');
+                args.push('-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best');
                 args.push('--merge-output-format', 'mp4');
                 args.push('--prefer-ffmpeg');
+                args.push('--postprocessor-args', 'ffmpeg:-c:v copy -c:a aac -avoid_negative_ts make_zero -movflags +faststart');
             } else {
                 args.push('-f', `bestvideo[height<=720]+bestaudio/best[height<=720]`);
                 args.push('--merge-output-format', options.videoFormat);
@@ -424,46 +426,49 @@ export class Downloader {
     }
 
     private addVideoFormatSelection(args: string[], videoFormat: string, qualityFilter: string): void {
-        // Enhanced format selection to ensure audio is preserved
+        // Simplified, reliable format selection
         switch (videoFormat) {
             case 'mp4':
-                // For MP4, prioritize formats that include both video and audio
-                args.push('-f', [
-                    `bestvideo[ext=mp4]${qualityFilter}+bestaudio[ext=m4a]/bestvideo[ext=mp4]${qualityFilter}+bestaudio`,
-                    `best[ext=mp4]${qualityFilter}`,
-                    `bestvideo${qualityFilter}+bestaudio/best`
-                ].join('/'));
+                // Simple, reliable MP4 selection - avoid complex fallbacks
+                if (qualityFilter) {
+                    args.push('-f', `bestvideo[ext=mp4]${qualityFilter}+bestaudio[ext=m4a]/bestvideo${qualityFilter}+bestaudio/best`);
+                } else {
+                    // For "best" quality, get the absolute best available
+                    args.push('-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best');
+                }
                 args.push('--merge-output-format', 'mp4');
-                // Ensure audio codec compatibility
-                args.push('--postprocessor-args', 'ffmpeg:-c:v copy -c:a aac -strict experimental');
+                args.push('--postprocessor-args', 'ffmpeg:-c:v copy -c:a aac -avoid_negative_ts make_zero -movflags +faststart');
                 break;
                 
             case 'mov':
-                args.push('-f', [
-                    `bestvideo[ext=mp4]${qualityFilter}+bestaudio[ext=m4a]/bestvideo[ext=mp4]${qualityFilter}+bestaudio`,
-                    `bestvideo${qualityFilter}+bestaudio/best`
-                ].join('/'));
+                if (qualityFilter) {
+                    args.push('-f', `bestvideo[ext=mp4]${qualityFilter}+bestaudio[ext=m4a]/bestvideo${qualityFilter}+bestaudio/best`);
+                } else {
+                    args.push('-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best');
+                }
                 args.push('--merge-output-format', 'mov');
-                args.push('--postprocessor-args', 'ffmpeg:-c:v copy -c:a aac');
+                args.push('--postprocessor-args', 'ffmpeg:-c:v copy -c:a aac -avoid_negative_ts make_zero -movflags +faststart');
                 break;
                 
             case 'webm':
-                args.push('-f', [
-                    `bestvideo[ext=webm]${qualityFilter}+bestaudio[ext=webm]/bestvideo[ext=webm]${qualityFilter}+bestaudio`,
-                    `best[ext=webm]${qualityFilter}`,
-                    `bestvideo${qualityFilter}+bestaudio/best`
-                ].join('/'));
+                if (qualityFilter) {
+                    args.push('-f', `bestvideo[ext=webm]${qualityFilter}+bestaudio[ext=webm]/bestvideo${qualityFilter}+bestaudio/best`);
+                } else {
+                    args.push('-f', 'bestvideo[ext=webm]+bestaudio[ext=webm]/bestvideo+bestaudio/best');
+                }
                 args.push('--merge-output-format', 'webm');
                 break;
                 
             default:
-                // Fallback for other formats
-                args.push('-f', `bestvideo${qualityFilter}+bestaudio/best`);
+                if (qualityFilter) {
+                    args.push('-f', `bestvideo${qualityFilter}+bestaudio/best`);
+                } else {
+                    args.push('-f', 'bestvideo+bestaudio/best');
+                }
                 args.push('--merge-output-format', videoFormat);
                 break;
         }
         
-        // Ensure ffmpeg is used for merging
         args.push('--prefer-ffmpeg');
     }
 

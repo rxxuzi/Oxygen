@@ -7,9 +7,14 @@ import { AuthManager } from './auth-manager';
 import Store from 'electron-store';
 
 // Set UTF-8 encoding for console output on Windows
-if (process.platform === 'win32') {
-    process.stdout.setEncoding('utf8');
-    process.stderr.setEncoding('utf8');
+if (process.platform === 'win32' && process.stdout && process.stdout.setEncoding) {
+    try {
+        process.stdout.setEncoding('utf8');
+        process.stderr.setEncoding('utf8');
+    } catch (error) {
+        // Encoding methods not available in Electron main process
+        console.log('Note: Unable to set console encoding in Electron environment');
+    }
 }
 
 console.log('Oxygen: Starting main process...');
