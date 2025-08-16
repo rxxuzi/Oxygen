@@ -91,7 +91,8 @@ export function DownloadForm() {
     };
 
     return (
-        <div className={`download-container ${isDownloading ? 'downloading' : ''}`}>
+        <>
+            <div className={`download-container ${isDownloading ? 'downloading' : ''}`}>
             <div className={`download-box ${isDownloading ? 'compact' : ''}`}>
                 <form onSubmit={handleSubmit}>
                     <div className="url-input-wrapper">
@@ -104,14 +105,6 @@ export function DownloadForm() {
                             onFocus={handleInputFocus}
                             disabled={isDownloading}
                             autoFocus
-                        />
-                        {/* Paste confirmation dialog */}
-                        <PasteConfirmDialog
-                            isVisible={isDialogVisible}
-                            clipboardText={clipboardText}
-                            position={position}
-                            onConfirm={handleConfirm}
-                            onCancel={handleCancel}
                         />
                     </div>
 
@@ -253,6 +246,14 @@ export function DownloadForm() {
                     </div>
                 </div>
             )}
-        </div>
+            </div>
+            {/* Paste confirmation toast */}
+            <PasteConfirmDialog
+                isVisible={isDialogVisible}
+                clipboardText={clipboardText}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+            />
+        </>
     );
 }

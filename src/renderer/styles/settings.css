@@ -1,183 +1,181 @@
-/* Settings Panel - Download Form Style */
+/* Settings Panel - Minimalist Design */
 
 /* Settings Container */
 .settings-container {
     position: relative;
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    padding: 40px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-/* Settings Box - Similar to download-box */
+/* Settings Box */
 .settings-box {
     width: 100%;
-    max-width: 600px;
-    background: rgba(var(--bg-main), 0.95);
-    backdrop-filter: blur(30px);
-    border: 1px solid rgba(var(--border-primary), 0.2);
-    border-radius: var(--radius-lg);
-    padding: 40px;
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-    transform: translateY(0);
-    box-shadow:
-        0 0 0 1px rgba(var(--border-primary), 0.1),
-        0 24px 64px -16px rgba(0, 0, 0, 0.8),
-        inset 0 1px 0 0 rgba(var(--border-primary), 0.08);
-    position: relative;
-    overflow: hidden;
+    max-width: 680px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 48px;
+    animation: settingsFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.settings-box::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg,
-        transparent,
-        rgba(var(--border-primary), 0.2) 20%,
-        rgba(var(--border-primary), 0.2) 80%,
-        transparent);
+@keyframes settingsFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Settings Content */
 .settings-content {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+}
+
+/* Settings Header */
+.settings-header {
+    margin-bottom: 48px;
+}
+
+.settings-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
 }
 
 /* Settings Section */
 .settings-section {
-    margin-bottom: 32px;
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .settings-section:last-child {
     margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
 /* Section Header */
 .settings-section-header {
     display: flex;
     align-items: center;
-    gap: 2px;
-    margin-bottom: 20px;
+    gap: 8px;
+    margin-bottom: 24px;
 }
 
 .settings-section-icon {
-    color: rgba(var(--text-primary), 0.5);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 18px;
 }
 
 .settings-section-title {
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 600;
-    color: rgba(var(--text-primary), 0.6);
-    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 
 /* Settings Grid */
 .settings-grid {
-    display: grid;
-    gap: 20px;
-}
-
-.settings-grid-2 {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-}
-
-.settings-grid-3 {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 /* Settings Field */
 .settings-field {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .settings-label {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    color: rgba(var(--text-primary), 0.8);
+    color: rgba(255, 255, 255, 0.7);
     letter-spacing: 0.01em;
 }
 
-/* Settings Input - Same style as download form */
+/* Settings Input */
 .settings-input {
     width: 100%;
-    height: var(--input-height);
-    background: rgba(var(--bg-secondary), 0.04);
-    border: 1px solid rgba(var(--border-primary), 0.25);
-    border-radius: var(--radius-md);
-    padding: 0 24px;
-    font-size: 15px;
-    color: rgba(var(--text-primary), 0.95);
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    font-family: var(--font-primary);
+    height: 44px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 0 16px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.2s ease;
+    font-family: inherit;
     font-weight: 400;
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(0, 0, 0, 0.5);
 }
 
 .settings-input:hover {
-    background: rgba(var(--bg-secondary), 0.06);
-    border-color: rgba(var(--border-primary), 0.35);
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(var(--button-primary), 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
 }
 
 .settings-input:focus {
     outline: none;
-    background: rgba(var(--bg-secondary), 0.06);
-    border-color: rgba(var(--button-primary), 0.6);
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(var(--button-primary), 0.4),
-        0 0 24px rgba(var(--button-primary), 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .settings-input::placeholder {
-    color: rgba(var(--text-primary), 0.35);
-    font-weight: 400;
+    color: rgba(255, 255, 255, 0.3);
 }
 
-/* Settings Select - Same style as quality selector */
+/* Settings Select */
 .settings-select {
     position: relative;
 }
 
 .settings-select select {
     width: 100%;
-    height: var(--option-height);
-    background: rgba(var(--bg-secondary), 0.04);
-    border: 1px solid rgba(var(--border-primary), 0.25);
-    border-radius: var(--radius-sm);
+    height: 44px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
     padding: 0 40px 0 16px;
-    color: rgba(var(--text-primary), 0.95);
+    color: rgba(255, 255, 255, 0.9);
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 0.2s ease;
     appearance: none;
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(0, 0, 0, 0.5);
+    font-family: inherit;
+}
+
+.settings-select select:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.settings-select select:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .settings-select select option {
-    background: #0a0a0a;
-    color: rgba(var(--text-primary), 0.95);
+    background: #1a1a1a;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .settings-select::after {
@@ -188,39 +186,21 @@
     transform: translateY(-50%);
     width: 0;
     height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 6px solid rgba(var(--text-primary), 0.6);
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid rgba(255, 255, 255, 0.4);
     pointer-events: none;
-    transition: border-color 0.3s ease;
-}
-
-.settings-select:hover select {
-    background: rgba(var(--bg-secondary), 0.06);
-    border-color: rgba(var(--border-primary), 0.35);
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(var(--button-primary), 0.15);
+    transition: border-color 0.2s ease;
 }
 
 .settings-select:hover::after {
-    border-top-color: rgba(var(--text-primary), 0.8);
-}
-
-.settings-select select:focus {
-    outline: none;
-    border-color: rgba(var(--button-primary), 0.6);
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(var(--button-primary), 0.4),
-        0 0 24px rgba(var(--button-primary), 0.2);
+    border-top-color: rgba(255, 255, 255, 0.6);
 }
 
 /* Path Input Group */
 .settings-path-group {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     align-items: stretch;
 }
 
@@ -230,119 +210,86 @@
 
 .settings-browse-button {
     padding: 0 20px;
-    height: var(--input-height);
-    background: rgba(var(--bg-secondary), 0.08);
-    border: 1px solid rgba(var(--border-primary), 0.25);
-    border-radius: var(--radius-sm);
-    color: rgba(var(--text-primary), 0.8);
-    font-size: 14px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 8px;
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(0, 0, 0, 0.5);
+    gap: 6px;
+    white-space: nowrap;
 }
 
 .settings-browse-button:hover {
-    background: rgba(var(--button-primary), 0.15);
-    border-color: rgba(var(--button-primary), 0.35);
-    color: rgb(var(--button-primary));
-    transform: translateY(-1px);
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(var(--button-primary), 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
 }
 
-/* Checkbox/Toggle Container - Same style as audio toggle */
+.settings-browse-button:active {
+    transform: scale(0.98);
+}
+
+/* Toggle Container */
 .settings-toggle-container {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
 }
 
 .settings-toggle {
-    height: var(--option-height);
-    background: rgba(var(--bg-secondary), 0.04);
-    border: 1px solid rgba(var(--border-primary), 0.25);
-    border-radius: var(--radius-sm);
-    padding: 0 20px;
+    min-height: 56px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 16px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
 }
 
-.settings-toggle::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(var(--button-primary), 0.1));
-    transition: width 0.3s ease;
-}
-
-.settings-toggle:hover::before {
-    width: 100%;
-}
-
 .settings-toggle:hover {
-    background: rgba(var(--bg-secondary), 0.06);
-    border-color: rgba(var(--border-primary), 0.35);
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(var(--button-primary), 0.15);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 .settings-toggle-info {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    flex: 1;
 }
 
 .settings-toggle-label {
     font-size: 14px;
-    color: rgba(var(--text-primary), 0.85);
-    user-select: none;
+    color: rgba(255, 255, 255, 0.9);
     font-weight: 500;
     letter-spacing: 0.01em;
-    position: relative;
-    z-index: 1;
 }
 
 .settings-toggle-description {
     font-size: 12px;
-    color: rgba(var(--text-secondary), 0.5);
-    user-select: none;
-    position: relative;
-    z-index: 1;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.4;
 }
 
-/* Custom Switch - Same as audio toggle */
+/* Minimalist Switch */
 .settings-switch {
     position: relative;
-    width: 44px;
-    height: 24px;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(var(--border-primary), 0.3);
-    border-radius: 12px;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    box-shadow:
-        inset 0 2px 4px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(0, 0, 0, 0.3);
+    width: 48px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .settings-switch::after {
@@ -350,99 +297,72 @@
     position: absolute;
     top: 2px;
     left: 2px;
-    width: 18px;
-    height: 18px;
-    background: linear-gradient(135deg, rgba(200, 200, 200, 0.95), rgba(160, 160, 160, 0.95));
-    border-radius: 9px;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    box-shadow:
-        0 2px 4px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.1);
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .settings-toggle.active .settings-switch {
-    background: rgba(var(--button-primary), 0.25);
-    border-color: rgba(var(--button-primary), 0.5);
-    box-shadow:
-        inset 0 2px 4px rgba(0, 0, 0, 0.2),
-        0 0 16px rgba(var(--button-primary), 0.3);
+    background: rgba(59, 130, 246, 0.9);
 }
 
 .settings-toggle.active .settings-switch::after {
     transform: translateX(20px);
-    background: linear-gradient(135deg, rgb(var(--button-primary)), rgb(var(--button-secondary)));
-    box-shadow:
-        0 2px 8px rgba(var(--button-primary), 0.5),
-        0 0 0 1px rgba(var(--button-secondary), 0.3);
 }
 
 /* Reset Button */
 .settings-reset-section {
-    margin-top: 24px;
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .settings-reset-button {
     width: 100%;
-    height: var(--button-height);
-    background: rgba(var(--bg-secondary), 0.04);
-    border: 1px solid rgba(var(--border-primary), 0.25);
-    border-radius: var(--radius-md);
-    color: rgba(var(--text-primary), 0.6);
-    font-size: 15px;
+    height: 44px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(0, 0, 0, 0.5);
+    gap: 8px;
 }
 
 .settings-reset-button:hover {
-    background: rgba(var(--progress-start), 0.1);
-    border-color: rgba(var(--progress-start), 0.3);
-    color: rgb(var(--progress-start));
-    transform: translateY(-1px);
-    box-shadow:
-        inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(var(--progress-start), 0.3),
-        0 0 20px rgba(var(--progress-start), 0.15);
+    background: rgba(239, 68, 68, 0.05);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: rgba(239, 68, 68, 0.8);
 }
 
-/* Settings Header */
-.settings-header {
-    width: 100%;
-    max-width: 800px;
-    margin-bottom: 32px;
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+.settings-reset-button:active {
+    transform: scale(0.98);
 }
 
-.settings-title {
-    font-size: 28px;
-    font-weight: 600;
-    color: rgb(var(--text-primary));
-    margin: 0;
-    letter-spacing: -0.02em;
+/* Format Options Grid */
+.settings-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
 }
 
-/* Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.settings-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
 }
 
 /* Scrollbar */
 .settings-container::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
 }
 
 .settings-container::-webkit-scrollbar-track {
@@ -450,22 +370,22 @@
 }
 
 .settings-container::-webkit-scrollbar-thumb {
-    background: rgba(var(--download-text-primary), 0.1);
-    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
 }
 
 .settings-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(var(--download-text-primary), 0.15);
+    background: rgba(255, 255, 255, 0.12);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .settings-container {
-        padding: 32px 16px;
+        padding: 24px 16px;
     }
     
-    .settings-section {
-        padding: 24px;
+    .settings-box {
+        padding: 32px 24px;
     }
     
     .settings-title {
@@ -484,5 +404,46 @@
     .settings-browse-button {
         width: 100%;
         justify-content: center;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: light) {
+    .settings-box {
+        background: rgba(255, 255, 255, 0.8);
+        border-color: rgba(0, 0, 0, 0.08);
+    }
+    
+    .settings-title {
+        color: rgba(0, 0, 0, 0.9);
+    }
+    
+    .settings-section {
+        border-bottom-color: rgba(0, 0, 0, 0.06);
+    }
+    
+    .settings-section-title {
+        color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .settings-input,
+    .settings-select select,
+    .settings-browse-button {
+        background: rgba(0, 0, 0, 0.02);
+        border-color: rgba(0, 0, 0, 0.08);
+        color: rgba(0, 0, 0, 0.9);
+    }
+    
+    .settings-toggle {
+        background: rgba(0, 0, 0, 0.02);
+        border-color: rgba(0, 0, 0, 0.06);
+    }
+    
+    .settings-switch {
+        background: rgba(0, 0, 0, 0.15);
+    }
+    
+    .settings-switch::after {
+        background: white;
     }
 }
