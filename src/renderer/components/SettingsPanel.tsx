@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSettingsStore } from '../stores/settings-store';
 import { VideoFormat, AudioFormat } from '../../shared/types';
 import { 
@@ -21,6 +21,7 @@ export function SettingsPanel() {
             });
         }
     };
+
 
     const videoFormatOptions = [
         { value: 'auto', label: 'Auto' },

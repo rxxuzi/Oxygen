@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Settings, FileText, Shield, Minimize2, Maximize2, X, Square } from 'lucide-react';
+import { Download, Settings, FileText, Shield, HardDrive, Minimize2, Maximize2, X, Square } from 'lucide-react';
 import { OxygenIcon } from './components/ui/OxygenIcon';
 import { DownloadForm } from './components/DownloadForm';
 import { SettingsPanel } from './components/SettingsPanel';
 import { LogsViewer } from './components/LogsViewer';
 import { AuthPanel } from './components/AuthPanel';
+import { LibraryPanel } from './components/LibraryPanel';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useDownloadStore } from './stores/download-store';
 import { useSettingsStore } from './stores/settings-store';
@@ -29,6 +30,7 @@ export default function App() {
 
     const tabs = [
         { id: 'main', label: 'Download', icon: Download },
+        { id: 'library', label: 'Library', icon: HardDrive },
         { id: 'settings', label: 'Settings', icon: Settings },
         { id: 'logs', label: 'Logs', icon: FileText },
         { id: 'auth', label: 'Auth', icon: Shield }
@@ -149,6 +151,11 @@ export default function App() {
                                 Download
                             </h2>
                         )}
+                        {activeTab === 'library' && (
+                            <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
+                                Library
+                            </h2>
+                        )}
                         {activeTab === 'settings' && (
                             <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
                                 Settings
@@ -167,21 +174,28 @@ export default function App() {
                     </div>
 
                     {/* Scrollable Content Area */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar">
-                        <div className="px-8 pb-8 space-y-8 max-w-5xl mx-auto">
-                            {/* Main Download Tab */}
-                            {activeTab === 'main' && <DownloadForm />}
-
-                            {/* Settings Tab */}
-                            {activeTab === 'settings' && <SettingsPanel />}
-
-                            {/* Logs Tab */}
-                            {activeTab === 'logs' && <LogsViewer />}
-
-                            {/* Auth Tab */}
-                            {activeTab === 'auth' && <AuthPanel />}
+                    {activeTab === 'library' ? (
+                        // Library gets special full-height layout
+                        <div className="flex-1 overflow-hidden">
+                            <LibraryPanel />
                         </div>
-                    </div>
+                    ) : (
+                        <div className="flex-1 overflow-y-auto custom-scrollbar">
+                            <div className="px-8 pb-8 space-y-8 max-w-5xl mx-auto">
+                                {/* Main Download Tab */}
+                                {activeTab === 'main' && <DownloadForm />}
+
+                                {/* Settings Tab */}
+                                {activeTab === 'settings' && <SettingsPanel />}
+
+                                {/* Logs Tab */}
+                                {activeTab === 'logs' && <LogsViewer />}
+
+                                {/* Auth Tab */}
+                                {activeTab === 'auth' && <AuthPanel />}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

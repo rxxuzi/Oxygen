@@ -39,7 +39,10 @@ function createWindow() {
             preload: path.join(__dirname, '../preload/preload.js'),
             contextIsolation: true,
             nodeIntegration: false,
-            sandbox: false
+            sandbox: false,
+            webSecurity: false, // Allow file:// access for media playback
+            allowRunningInsecureContent: true,
+            experimentalFeatures: true
         },
         icon: path.join(__dirname, '../../resources/icons/icon.ico'),
         title: 'Oxygen',

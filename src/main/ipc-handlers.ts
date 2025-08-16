@@ -3,6 +3,7 @@ import { Downloader } from './downloader';
 import { ConfigManager } from './config';
 import { AuthManager } from './auth-manager';
 import { FileManager } from './file-manager';
+import { LibraryManager } from './library-manager';
 import { DownloadOptions, Settings } from '../shared/types';
 import { IPC_CHANNELS } from '../shared/ipc-channels';
 import path from 'path';
@@ -10,6 +11,7 @@ import path from 'path';
 export function setupIpcHandlers(configManager: ConfigManager, authManager: AuthManager) {
     const downloader = new Downloader();
     const fileManager = new FileManager();
+    const libraryManager = new LibraryManager();
 
     // Download handlers
     ipcMain.handle(IPC_CHANNELS.DOWNLOAD_START, async (event, url: string, options: DownloadOptions) => {
@@ -37,6 +39,17 @@ export function setupIpcHandlers(configManager: ConfigManager, authManager: Auth
                 folder: options.outputPath,
                 filename: result.filename ? result.filename.normalize('NFC') : result.filename
             });
+
+            // Auto-add to library if file was downloaded successfully
+            if (result.filename && result.outputPath) {
+                const filePath = path.join(result.outputPath, result.filename);
+                try {
+                    await libraryManager.addFile(filePath);
+                } catch (error) {
+                    console.log('Failed to auto-add file to library:', error);
+                    // Don't fail the download if library add fails
+                }
+            }
 
             return result;
         } catch (error: any) {
@@ -84,6 +97,10 @@ export function setupIpcHandlers(configManager: ConfigManager, authManager: Auth
 
     ipcMain.handle(IPC_CHANNELS.SHELL_SHOW_ITEM, async (_, path: string) => {
         return shell.showItemInFolder(path);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.SHELL_OPEN_EXTERNAL, async (_, path: string) => {
+        return shell.openPath(path);
     });
 
     // Auth handlers
@@ -154,5 +171,75 @@ export function setupIpcHandlers(configManager: ConfigManager, authManager: Auth
     ipcMain.handle(IPC_CHANNELS.WINDOW_IS_MAXIMIZED, async (event) => {
         const window = BrowserWindow.fromWebContents(event.sender);
         return window?.isMaximized() || false;
+    });
+
+    // Library handlers
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_SCAN, async (_, directoryPath: string) => {
+        return libraryManager.scanDirectory(directoryPath);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_SCAN_DOWNLOAD_PATHS, async (_, downloadPaths: string[]) => {
+        return libraryManager.scanDownloadPaths(downloadPaths);
+    });
+
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_GET_FILES, async () => {
+        return libraryManager.getFiles();
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_CLEAN, async () => {
+        return libraryManager.cleanLibrary();
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_RESET_PLAY_COUNTS, async () => {
+        return libraryManager.resetPlayCounts();
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_RESET_FAVORITES, async () => {
+        return libraryManager.resetFavorites();
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_CLEAR, async () => {
+        return libraryManager.clearLibrary();
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_GET_STATS, async () => {
+        return libraryManager.getLibraryStats();
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_ADD_FILE, async (_, filePath: string) => {
+        return libraryManager.addFile(filePath);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_REMOVE_FILE, async (_, fileId: string) => {
+        return libraryManager.removeFile(fileId);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_UPDATE_FILE, async (_, fileId: string, updates: any) => {
+        return libraryManager.updateFile(fileId, updates);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_MOVE_FILE, async (_, fileId: string, newPath: string) => {
+        return libraryManager.moveFile(fileId, newPath);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_DELETE_FILE, async (_, fileId: string) => {
+        return libraryManager.deleteFile(fileId);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_RENAME_FILE, async (_, fileId: string, newName: string) => {
+        return libraryManager.renameFile(fileId, newName);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_GENERATE_THUMBNAIL, async (_, fileId: string) => {
+        return libraryManager.generateThumbnail(fileId);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_GET_FILE_STATS, async (_, filePath: string) => {
+        return libraryManager.getFileStats(filePath);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.LIBRARY_COPY_PATH, async (_, fileId: string) => {
+        return libraryManager.copyPath(fileId);
     });
 }

@@ -104,3 +104,55 @@ export interface QueueItem {
     addedAt: string;
     completedAt?: string;
 }
+
+// Library
+export interface LibraryFile {
+    id: string;
+    filename: string;
+    path: string;
+    type: 'video' | 'audio';
+    format: string;
+    size: number;
+    duration?: number;
+    width?: number;
+    height?: number;
+    thumbnail?: string;
+    createdAt: string;
+    addedAt: string;
+    tags: string[];
+    favorite: boolean;
+    lastPlayed?: string;
+    playCount: number;
+}
+
+export interface PlaybackState {
+    currentFile?: LibraryFile;
+    isPlaying: boolean;
+    currentTime: number;
+    duration: number;
+    volume: number;
+    muted: boolean;
+    playbackRate: number;
+}
+
+export interface LibraryFilter {
+    search: string;
+    type: 'all' | 'video' | 'audio';
+    favorite: boolean;
+    tags: string[];
+}
+
+export interface LibrarySort {
+    field: 'filename' | 'addedAt' | 'size' | 'duration' | 'lastPlayed';
+    order: 'asc' | 'desc';
+}
+
+export interface FileStats {
+    size: number;
+    duration?: number;
+    width?: number;
+    height?: number;
+    bitrate?: number;
+    format: string;
+    createdAt: string;
+}
