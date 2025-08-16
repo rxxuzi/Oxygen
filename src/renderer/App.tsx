@@ -142,71 +142,44 @@ export default function App() {
 
                 {/* Main Content Area */}
                 <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-zinc-900 to-black">
+                    {/* Fixed Header for each tab */}
+                    <div className="px-8 pt-8 pb-4">
+                        {activeTab === 'main' && (
+                            <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
+                                Download
+                            </h2>
+                        )}
+                        {activeTab === 'settings' && (
+                            <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
+                                Settings
+                            </h2>
+                        )}
+                        {activeTab === 'logs' && (
+                            <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
+                                Download Logs
+                            </h2>
+                        )}
+                        {activeTab === 'auth' && (
+                            <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
+                                Authentication
+                            </h2>
+                        )}
+                    </div>
+
+                    {/* Scrollable Content Area */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar">
-                        <div className="p-8 space-y-8 max-w-5xl mx-auto">
+                        <div className="px-8 pb-8 space-y-8 max-w-5xl mx-auto">
                             {/* Main Download Tab */}
-                            {activeTab === 'main' && (
-                                <div className="space-y-8">
-                                    <div className="text-center space-y-2">
-                                        <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
-                                            Download Videos & Audio
-                                        </h2>
-                                        <p className="text-zinc-400 text-lg">
-                                            Download content from YouTube, Vimeo, and other supported platforms
-                                        </p>
-                                    </div>
-                                    
-                                    <DownloadForm />
-                                </div>
-                            )}
+                            {activeTab === 'main' && <DownloadForm />}
 
                             {/* Settings Tab */}
-                            {activeTab === 'settings' && (
-                                <div className="space-y-8">
-                                    <div className="text-center space-y-2">
-                                        <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
-                                            Settings
-                                        </h2>
-                                        <p className="text-zinc-400 text-lg">
-                                            Configure download preferences and output settings
-                                        </p>
-                                    </div>
-                                    
-                                    <SettingsPanel />
-                                </div>
-                            )}
+                            {activeTab === 'settings' && <SettingsPanel />}
 
                             {/* Logs Tab */}
-                            {activeTab === 'logs' && (
-                                <div className="space-y-8">
-                                    <div className="text-center space-y-2">
-                                        <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
-                                            Download Logs
-                                        </h2>
-                                        <p className="text-zinc-400 text-lg">
-                                            View and manage your download history
-                                        </p>
-                                    </div>
-                                    
-                                    <LogsViewer />
-                                </div>
-                            )}
+                            {activeTab === 'logs' && <LogsViewer />}
 
                             {/* Auth Tab */}
-                            {activeTab === 'auth' && (
-                                <div className="space-y-8">
-                                    <div className="text-center space-y-2">
-                                        <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
-                                            Authentication
-                                        </h2>
-                                        <p className="text-zinc-400 text-lg">
-                                            Manage authentication for various platforms
-                                        </p>
-                                    </div>
-                                    
-                                    <AuthPanel />
-                                </div>
-                            )}
+                            {activeTab === 'auth' && <AuthPanel />}
                         </div>
                     </div>
                 </div>

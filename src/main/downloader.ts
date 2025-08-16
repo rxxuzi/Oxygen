@@ -327,6 +327,8 @@ export class Downloader {
             args.push('--extractor-args', 'youtube:player_client=android');
             args.push('--sleep-interval', '2');
             args.push('--max-sleep-interval', '5');
+            // YouTube-specific title extraction improvements
+            args.push('--extractor-args', 'youtube:lang=en');
         }
         
         // Format selection with audio preservation
@@ -378,9 +380,13 @@ export class Downloader {
         // Explicitly disable browser cookie extraction to prevent permission issues
         args.push('--no-cookies-from-browser');
         
-        // Output path and filename - use restrictfilenames for better Unicode support
-        const outputTemplate = path.join(options.outputPath, '%(title)s.%(ext)s');
+        // Output path and filename - improved template for better title extraction
+        const outputTemplate = path.join(options.outputPath, '%(title).200B.%(ext)s');
         args.push('-o', outputTemplate);
+        
+        // Enable metadata extraction for title handling
+        args.push('--write-info-json');
+        args.push('--clean-info-json');
         
         return args;
     }

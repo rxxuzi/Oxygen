@@ -1,3 +1,7 @@
+/* Import custom styles */
+@import './download.css';
+@import './settings.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -24,6 +28,67 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+
+    /* Blue shades */
+    --blue-200: 213.1 93.9% 67.8%;
+    --blue-400: 217.2 91.2% 73%;
+    --blue-600: 217.2 91.2% 59.8%;
+    --blue-700: 221.2 83.2% 53.3%;
+
+    /* Status colors */
+    --yellow-600: 45 93.4% 47.5%;
+    --green-600: 142.1 76.2% 36.3%;
+    --red-600: 0 84.2% 60.2%;
+
+    /* Glass effect colors */
+    --glass-bg: 255 255 255;
+    --glass-border: 255 255 255;
+
+    /* Typography */
+    --font-primary: 'Geist', system-ui, -apple-system, sans-serif;
+    --font-mono: 'Geist Mono', 'SF Mono', Monaco, Consolas, monospace;
+
+    /* UI Colors */
+    --bg-main: 15 15 15;           /* メインボックスの背景 */
+    --bg-secondary: 255 255 255;    /* セカンダリ要素の背景 */
+    --border-primary: 255 255 255;  /* プライマリボーダー */
+    --text-primary: 255 255 255;    /* プライマリテキスト */
+    --text-secondary: 255 255 255;  /* セカンダリテキスト */
+    --console-bg: 20 20 20;         /* コンソール背景 */
+    --progress-bg: 20 20 20;        /* プログレスバー背景 */
+    --button-primary: 59 130 246;   /* ボタンのプライマリカラー */
+    --button-secondary: 37 99 235;  /* ボタンのセカンダリカラー */
+    --progress-start: 239 68 68;    /* プログレスバー開始色 */
+    --progress-end: 59 130 246;     /* プログレスバー終了色 */
+
+    /* UI Sizes */
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --input-height: 56px;
+    --button-height: 52px;
+    --option-height: 48px;
+
+    /* Legacy support for download.css */
+    --download-font-primary: var(--font-primary);
+    --download-font-mono: var(--font-mono);
+    --download-bg-main: var(--bg-main);
+    --download-bg-secondary: var(--bg-secondary);
+    --download-border-primary: var(--border-primary);
+    --download-text-primary: var(--text-primary);
+    --download-text-secondary: var(--text-secondary);
+    --download-console-bg: var(--console-bg);
+    --download-progress-bg: var(--progress-bg);
+    --download-button-primary: var(--button-primary);
+    --download-button-secondary: var(--button-secondary);
+    --download-progress-start: var(--progress-start);
+    --download-progress-end: var(--progress-end);
+    --download-radius-sm: var(--radius-sm);
+    --download-radius-md: var(--radius-md);
+    --download-radius-lg: var(--radius-lg);
+    --download-input-height: var(--input-height);
+    --download-button-height: var(--button-height);
+    --download-option-height: var(--option-height);
   }
 
   .dark {
@@ -46,6 +111,20 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+
+    /* Blue shades for dark mode */
+    --blue-200: 213.1 93.9% 67.8%;
+    --blue-400: 213.3 93.9% 67.8%;
+    --blue-600: 217.2 91.2% 59.8%;
+    --blue-700: 224.3 76.3% 48%;
+
+    /* Status colors for dark mode */
+    --yellow-600: 45 93.4% 47.5%;
+    --green-600: 142.1 70.6% 45.3%;
+
+    /* Glass effect colors for dark mode */
+    --glass-bg: 0 0 0;
+    --glass-border: 255 255 255;
   }
 }
 
@@ -54,8 +133,10 @@
     border-color: hsl(var(--border));
   }
   body {
-    @apply bg-zinc-950 text-zinc-100;
+    background: #000;
+    color: white;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-primary);
   }
 }
 
@@ -66,23 +147,27 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-muted;
+  @apply bg-zinc-900/50;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-border rounded-md;
+  @apply bg-zinc-600;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-accent;
+  @apply bg-zinc-500;
 }
 
 /* Ensure full height */
 html, body, #root {
   height: 100%;
+  overflow: hidden;
+  background: #000;
 }
 
-/* Professional Animations */
+/* Minimal Animations */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -91,28 +176,6 @@ html, body, #root {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes slide-in-from-left {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slide-in-from-right {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
   }
 }
 
@@ -138,15 +201,6 @@ html, body, #root {
   }
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 .animate-in {
   animation-duration: 300ms;
   animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
@@ -157,14 +211,6 @@ html, body, #root {
   animation-name: fade-in;
 }
 
-.slide-in-from-left {
-  animation-name: slide-in-from-left;
-}
-
-.slide-in-from-right {
-  animation-name: slide-in-from-right;
-}
-
 .slide-in-from-top {
   animation-name: slide-in-from-top;
 }
@@ -173,27 +219,17 @@ html, body, #root {
   animation-name: scale-in;
 }
 
-/* Smooth transitions for interactive elements */
+/* Smooth transitions */
 .transition-smooth {
   transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Glass morphism effect */
 .glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.glass-dark {
-  background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Enhanced focus styles */
-.focus-ring {
-  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900;
+  background: rgba(var(--glass-bg), 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(var(--glass-border), 0.08);
 }
 
 /* Custom Scrollbar for Dark Theme */
@@ -203,45 +239,34 @@ html, body, #root {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  background: transparent;
+  border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
   transition: background 0.2s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
 }
 
-/* Removed excessive animations for cleaner UI */
-
-/* Gradient Text Animation */
-@keyframes gradient-x {
-  0%, 100% {
-    background-size: 200% 200%;
-    background-position: left center;
-  }
-  50% {
-    background-size: 200% 200%;
-    background-position: right center;
-  }
+/* Focus styles */
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-0;
 }
 
-.gradient-animate {
-  background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6);
-  background-size: 400% 400%;
-  animation: gradient-x 3s ease infinite;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Disable text selection on UI elements */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-/* Panel Enhancements */
-.panel-glass {
-  background: rgba(39, 39, 42, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* Monospace font for code/console */
+.font-mono {
+  font-family: var(--download-font-mono);
 }

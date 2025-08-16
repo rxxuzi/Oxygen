@@ -1,10 +1,14 @@
 import React from 'react';
 import { useSettingsStore } from '../stores/settings-store';
-import { Input } from './ui/Input';
-import { Select } from './ui/Select';
-import { Button } from './ui/Button';
-import { Card } from './ui/card';
 import { VideoFormat, AudioFormat } from '../../shared/types';
+import { 
+    Video, 
+    Music2, 
+    Download, 
+    Settings2, 
+    FolderOpen,
+    RotateCcw
+} from 'lucide-react';
 
 export function SettingsPanel() {
     const { settings, updateSettings, resetSettings } = useSettingsStore();
@@ -33,161 +37,220 @@ export function SettingsPanel() {
     ];
 
     return (
-        <div className="space-y-6">
-            {/* Video Settings */}
-            <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Video Settings</h3>
+        <div className="settings-container">
+            <div className="settings-box">
+                <div className="settings-content">
+                {/* Video Settings */}
+                <div className="settings-section">
+                    <div className="settings-section-header">
+                        <div className="settings-section-icon">
+                            <Video size={20} />
+                        </div>
+                        <h2 className="settings-section-title">Video Settings</h2>
+                    </div>
 
-                <div className="space-y-4">
-                    <Select
-                        label="Format"
-                        value={settings.videoFormat}
-                        onChange={(e) => updateSettings({ videoFormat: e.target.value as VideoFormat })}
-                        options={videoFormatOptions}
-                    />
+                    <div className="settings-grid settings-grid-2">
+                        <div className="settings-field">
+                            <label className="settings-label">Format</label>
+                            <div className="settings-select">
+                                <select
+                                    value={settings.videoFormat}
+                                    onChange={(e) => updateSettings({ videoFormat: e.target.value as VideoFormat })}
+                                >
+                                    {videoFormatOptions.map(option => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">Output Path</label>
-                        <div className="flex gap-2">
-                            <Input
-                                type="text"
-                                value={settings.videoOutputPath}
-                                onChange={(e) => updateSettings({ videoOutputPath: e.target.value })}
-                                className="flex-1"
+                        <div className="settings-field">
+                            <label className="settings-label">Output Path</label>
+                            <div className="settings-path-group">
+                                <input
+                                    type="text"
+                                    value={settings.videoOutputPath}
+                                    onChange={(e) => updateSettings({ videoOutputPath: e.target.value })}
+                                    className="settings-input settings-path-input"
+                                    placeholder="Choose output folder..."
+                                />
+                                <button 
+                                    onClick={() => handleBrowse('video')} 
+                                    className="settings-browse-button"
+                                >
+                                    <FolderOpen size={16} />
+                                    Browse
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Audio Settings */}
+                <div className="settings-section">
+                    <div className="settings-section-header">
+                        <div className="settings-section-icon">
+                            <Music2 size={20} />
+                        </div>
+                        <h2 className="settings-section-title">Audio Settings</h2>
+                    </div>
+
+                    <div className="settings-grid settings-grid-2">
+                        <div className="settings-field">
+                            <label className="settings-label">Format</label>
+                            <div className="settings-select">
+                                <select
+                                    value={settings.audioFormat}
+                                    onChange={(e) => updateSettings({ audioFormat: e.target.value as AudioFormat })}
+                                >
+                                    {audioFormatOptions.map(option => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="settings-field">
+                            <label className="settings-label">Output Path</label>
+                            <div className="settings-path-group">
+                                <input
+                                    type="text"
+                                    value={settings.audioOutputPath}
+                                    onChange={(e) => updateSettings({ audioOutputPath: e.target.value })}
+                                    className="settings-input settings-path-input"
+                                    placeholder="Choose output folder..."
+                                />
+                                <button 
+                                    onClick={() => handleBrowse('audio')} 
+                                    className="settings-browse-button"
+                                >
+                                    <FolderOpen size={16} />
+                                    Browse
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Download Settings */}
+                <div className="settings-section">
+                    <div className="settings-section-header">
+                        <div className="settings-section-icon">
+                            <Download size={20} />
+                        </div>
+                        <h2 className="settings-section-title">Download Settings</h2>
+                    </div>
+
+                    <div className="settings-grid settings-grid-3">
+                        <div className="settings-field">
+                            <label className="settings-label">Segments</label>
+                            <input
+                                type="number"
+                                min="1"
+                                max="10"
+                                value={settings.segments}
+                                onChange={(e) => updateSettings({ segments: parseInt(e.target.value) || 4 })}
+                                className="settings-input"
+                                placeholder="4"
                             />
-                            <Button onClick={() => handleBrowse('video')} variant="secondary">
-                                Browse
-                            </Button>
                         </div>
-                    </div>
-                </div>
-            </Card>
 
-            {/* Audio Settings */}
-            <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Audio Settings</h3>
-
-                <div className="space-y-4">
-                    <Select
-                        label="Format"
-                        value={settings.audioFormat}
-                        onChange={(e) => updateSettings({ audioFormat: e.target.value as AudioFormat })}
-                        options={audioFormatOptions}
-                    />
-
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">Output Path</label>
-                        <div className="flex gap-2">
-                            <Input
-                                type="text"
-                                value={settings.audioOutputPath}
-                                onChange={(e) => updateSettings({ audioOutputPath: e.target.value })}
-                                className="flex-1"
+                        <div className="settings-field">
+                            <label className="settings-label">Retries</label>
+                            <input
+                                type="number"
+                                min="0"
+                                value={settings.retries}
+                                onChange={(e) => updateSettings({ retries: parseInt(e.target.value) || 5 })}
+                                className="settings-input"
+                                placeholder="5"
                             />
-                            <Button onClick={() => handleBrowse('audio')} variant="secondary">
-                                Browse
-                            </Button>
+                        </div>
+
+                        <div className="settings-field">
+                            <label className="settings-label">Buffer Size</label>
+                            <input
+                                type="text"
+                                value={settings.bufferSize}
+                                onChange={(e) => updateSettings({ bufferSize: e.target.value })}
+                                className="settings-input"
+                                placeholder="16K"
+                            />
                         </div>
                     </div>
                 </div>
-            </Card>
 
-            {/* Download Settings */}
-            <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Download Settings</h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">Segments</label>
-                        <Input
-                            type="number"
-                            min="1"
-                            max="10"
-                            value={settings.segments}
-                            onChange={(e) => updateSettings({ segments: parseInt(e.target.value) || 4 })}
-                        />
+                {/* Other Settings */}
+                <div className="settings-section">
+                    <div className="settings-section-header">
+                        <div className="settings-section-icon">
+                            <Settings2 size={20} />
+                        </div>
+                        <h2 className="settings-section-title">Other Settings</h2>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">Retries</label>
-                        <Input
-                            type="number"
-                            min="0"
-                            value={settings.retries}
-                            onChange={(e) => updateSettings({ retries: parseInt(e.target.value) || 5 })}
-                        />
+                    <div className="settings-toggle-container">
+                        <div 
+                            className={`settings-toggle ${settings.writeThumbnail ? 'active' : ''}`}
+                            onClick={() => updateSettings({ writeThumbnail: !settings.writeThumbnail })}
+                        >
+                            <div className="settings-toggle-info">
+                                <span className="settings-toggle-label">Write thumbnail</span>
+                                <span className="settings-toggle-description">Save thumbnail image separately</span>
+                            </div>
+                            <div className="settings-switch" />
+                        </div>
+
+                        <div 
+                            className={`settings-toggle ${settings.embedThumbnail ? 'active' : ''}`}
+                            onClick={() => updateSettings({ embedThumbnail: !settings.embedThumbnail })}
+                        >
+                            <div className="settings-toggle-info">
+                                <span className="settings-toggle-label">Embed thumbnail</span>
+                                <span className="settings-toggle-description">Embed thumbnail in media file</span>
+                            </div>
+                            <div className="settings-switch" />
+                        </div>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">Buffer Size</label>
-                        <Input
-                            type="text"
-                            value={settings.bufferSize}
-                            onChange={(e) => updateSettings({ bufferSize: e.target.value })}
-                            placeholder="16M"
-                        />
+                    <div className="settings-grid settings-grid-2" style={{ marginTop: '20px' }}>
+                        <div className="settings-field">
+                            <label className="settings-label">Proxy Server</label>
+                            <input
+                                type="text"
+                                value={settings.proxy}
+                                onChange={(e) => updateSettings({ proxy: e.target.value })}
+                                className="settings-input"
+                                placeholder="http://proxyserver:port"
+                            />
+                        </div>
+
+                        <div className="settings-field">
+                            <label className="settings-label">Subtitle Languages</label>
+                            <input
+                                type="text"
+                                value={settings.subtitles}
+                                onChange={(e) => updateSettings({ subtitles: e.target.value })}
+                                className="settings-input"
+                                placeholder="en.*,ja"
+                            />
+                        </div>
                     </div>
                 </div>
-            </Card>
 
-            {/* Other Settings */}
-            <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Other Settings</h3>
-
-                <div className="space-y-4">
-                    <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-zinc-700/50 hover:bg-zinc-800/50 transition-colors">
-                        <input
-                            type="checkbox"
-                            checked={settings.writeThumbnail}
-                            onChange={(e) => updateSettings({ writeThumbnail: e.target.checked })}
-                            className="w-4 h-4 rounded border-zinc-700 text-blue-600 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-0 bg-zinc-900"
-                        />
-                        <div className="flex flex-col">
-                            <span className="text-sm font-medium">Write thumbnail</span>
-                            <span className="text-xs text-zinc-400">Save thumbnail image separately</span>
-                        </div>
-                    </label>
-
-                    <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-zinc-700/50 hover:bg-zinc-800/50 transition-colors">
-                        <input
-                            type="checkbox"
-                            checked={settings.embedThumbnail}
-                            onChange={(e) => updateSettings({ embedThumbnail: e.target.checked })}
-                            className="w-4 h-4 rounded border-zinc-700 text-blue-600 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-0 bg-zinc-900"
-                        />
-                        <div className="flex flex-col">
-                            <span className="text-sm font-medium">Embed thumbnail</span>
-                            <span className="text-xs text-zinc-400">Embed thumbnail in media file</span>
-                        </div>
-                    </label>
-
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">Proxy Server</label>
-                        <Input
-                            type="text"
-                            value={settings.proxy}
-                            onChange={(e) => updateSettings({ proxy: e.target.value })}
-                            placeholder="http://proxyserver:port"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">Subtitle Languages</label>
-                        <Input
-                            type="text"
-                            value={settings.subtitles}
-                            onChange={(e) => updateSettings({ subtitles: e.target.value })}
-                            placeholder="en.*,ja"
-                        />
-                    </div>
+                {/* Reset Button */}
+                <div className="settings-reset-section">
+                    <button onClick={resetSettings} className="settings-reset-button">
+                        <RotateCcw size={16} />
+                        Reset to Defaults
+                    </button>
                 </div>
-            </Card>
-
-            <Card className="p-6">
-                <Button onClick={resetSettings} variant="secondary" className="w-full">
-                    Reset to Defaults
-                </Button>
-            </Card>
+            </div>
+            </div>
         </div>
     );
 }

@@ -1,44 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDownloadStore } from '../stores/download-store';
 import { useSettingsStore } from '../stores/settings-store';
 import { useAuthStore } from '../stores/auth-store';
-import { Input } from './ui/Input';
-import { Select } from './ui/Select';
-import { Button } from './ui/Button';
-import { Panel, PanelContent } from './ui/Panel';
-import { Accordion } from './ui/Accordion';
-import { ProgressBar } from './ProgressBar';
-import { DownloadIcon } from './ui/OxygenIcon';
+import { useClipboardPaste } from '../hooks/useClipboardPaste';
+import { PasteConfirmDialog } from './PasteConfirmDialog';
 import { Quality } from '../../shared/types';
+import '../styles/download.css';
 
 export function DownloadForm() {
     const [url, setUrl] = useState('');
     const [audioOnly, setAudioOnly] = useState(false);
     const [quality, setQuality] = useState<Quality>('best');
+    const [phase, setPhase] = useState<'idle' | 'downloading' | 'processing'>('idle');
+    const consoleRef = useRef<HTMLDivElement>(null);
 
     const { isDownloading, progress, logs, startDownload, cancelDownload } = useDownloadStore();
     const { settings } = useSettingsStore();
     const { getAuthForUrl } = useAuthStore();
 
-    // Listen for paste URL events from context menu
-    useEffect(() => {
-        const handlePasteURL = (event: CustomEvent) => {
-            setUrl(event.detail);
-        };
+    // Clipboard paste functionality
+    const {
+        isDialogVisible,
+        clipboardText,
+        position,
+        handleInputFocus,
+        handleConfirm,
+        handleCancel
+    } = useClipboardPaste({
+        onPaste: setUrl,
+        enabled: true
+    });
 
-        window.addEventListener('pasteURL', handlePasteURL as EventListener);
-        return () => window.removeEventListener('pasteURL', handlePasteURL as EventListener);
-    }, []);
+    // Auto-scroll console to bottom when new logs appear
+    useEffect(() => {
+        if (consoleRef.current) {
+            consoleRef.current.scrollTop = consoleRef.current.scrollHeight;
+        }
+    }, [logs]);
+
+    // Update phase based on progress
+    useEffect(() => {
+        if (isDownloading) {
+            if (progress && progress.percent > 95) {
+                setPhase('processing');
+            } else {
+                setPhase('downloading');
+            }
+        } else {
+            setPhase('idle');
+        }
+    }, [isDownloading, progress]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!url.trim()) {
-            alert('Please enter a URL');
-            return;
-        }
+        if (!url.trim()) return;
 
-        // Get auth data for the URL if available
         const authData = await getAuthForUrl(url);
 
         const options = {
@@ -61,161 +78,181 @@ export function DownloadForm() {
         setUrl('');
     };
 
-    const qualityOptions = [
-        { value: 'best', label: 'Best' },
-        { value: 'high', label: 'High (1080p)' },
-        { value: 'medium', label: 'Medium (720p)' },
-        { value: 'low', label: 'Low (480p)' },
-        { value: 'worst', label: 'Worst' }
-    ];
+    const formatBytes = (bytes: number): string => {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    };
+
+    const formatTime = (timestamp: string): string => {
+        return timestamp.split(' ')[1] || timestamp;
+    };
 
     return (
-        <Panel className="transition-all duration-300 ease-out">
-            <PanelContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2">
-                    <label htmlFor="url-input" className="block text-sm font-medium text-zinc-300">
-                        Video URL
-                    </label>
-                    <Input
-                        id="url-input"
-                        type="url"
-                        placeholder="https://www.youtube.com/watch?v=..."
-                        value={url}
-                        onChange={(e) => setUrl(e.target.value)}
-                        disabled={isDownloading}
-                        className="w-full text-base"
-                        aria-describedby="url-help"
-                        enableClipboardPaste={true}
-                        onClipboardPaste={(text) => setUrl(text)}
-                    />
-                    <p id="url-help" className="text-xs text-zinc-400">
-                        Paste a video URL from YouTube, Vimeo, or other supported platforms
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Select
-                        label="Video Quality"
-                        value={quality}
-                        onChange={(e) => setQuality(e.target.value as Quality)}
-                        options={qualityOptions}
-                        disabled={isDownloading || audioOnly}
-                    />
-
-                    <div className="flex items-center justify-center">
-                        <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-zinc-700/50 hover:bg-zinc-800/50 transition-colors">
-                            <input
-                                type="checkbox"
-                                checked={audioOnly}
-                                onChange={(e) => setAudioOnly(e.target.checked)}
-                                disabled={isDownloading}
-                                className="w-4 h-4 rounded border-zinc-700 text-blue-600 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-0 bg-zinc-900"
-                                aria-describedby="audio-only-help"
-                            />
-                            <div className="flex flex-col">
-                                <span className="text-sm font-medium">Audio Only</span>
-                                <span className="text-xs text-zinc-400">Download audio track only</span>
-                            </div>
-                        </label>
+        <div className={`download-container ${isDownloading ? 'downloading' : ''}`}>
+            <div className={`download-box ${isDownloading ? 'compact' : ''}`}>
+                <form onSubmit={handleSubmit}>
+                    <div className="url-input-wrapper">
+                        <input
+                            type="url"
+                            className="url-input"
+                            placeholder="Paste video URL here..."
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
+                            onFocus={handleInputFocus}
+                            disabled={isDownloading}
+                            autoFocus
+                        />
+                        {/* Paste confirmation dialog */}
+                        <PasteConfirmDialog
+                            isVisible={isDialogVisible}
+                            clipboardText={clipboardText}
+                            position={position}
+                            onConfirm={handleConfirm}
+                            onCancel={handleCancel}
+                        />
                     </div>
-                </div>
 
-                <div className="flex gap-3">
-                    <Button
+                    {url && !isDownloading && (
+                        <div className="options-grid">
+                            <div className="quality-selector">
+                                <select
+                                    className="quality-select"
+                                    value={quality}
+                                    onChange={(e) => setQuality(e.target.value as Quality)}
+                                    disabled={audioOnly}
+                                >
+                                    <option value="best">Best Quality</option>
+                                    <option value="high">High (1080p)</option>
+                                    <option value="medium">Medium (720p)</option>
+                                    <option value="low">Low (480p)</option>
+                                    <option value="worst">Lowest</option>
+                                </select>
+                            </div>
+
+                            <div
+                                className={`audio-toggle ${audioOnly ? 'active' : ''}`}
+                                onClick={() => setAudioOnly(!audioOnly)}
+                            >
+                                <span className="audio-toggle-label">Audio Only</span>
+                                <div className="audio-toggle-switch" />
+                            </div>
+                        </div>
+                    )}
+
+                    <button
                         type="submit"
+                        className="download-button"
                         disabled={isDownloading || !url.trim()}
-                        className="flex-1"
-                        variant="primary"
-                        size="lg"
-                        loading={isDownloading}
                     >
-                        <DownloadIcon className="mr-2" size={18} />
-                        {isDownloading ? 'Downloading...' : 'Start Download'}
-                    </Button>
-                    
-                    {isDownloading && (
-                        <Button
+                        {isDownloading ? (
+                            <>
+                                <svg className="status-spinner" viewBox="0 0 24 24" />
+                                <span>Downloading...</span>
+                            </>
+                        ) : (
+                            <>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                                <span>Download</span>
+                            </>
+                        )}
+                    </button>
+                </form>
+            </div>
+
+            {isDownloading && (
+                <div className="progress-section">
+                    <div className="status-header">
+                        <div className="status-text">
+                            <span className="status-label">STATUS</span>
+                            <div className="processing-phase">
+                                <span className="status-phase">
+                                    {phase === 'processing' ? 'Processing' : 'Downloading'}
+                                </span>
+                                {phase === 'processing' && (
+                                    <div className="processing-dots">
+                                        <div className="processing-dot" />
+                                        <div className="processing-dot" />
+                                        <div className="processing-dot" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="status-spinner" />
+                        </div>
+                        <button
                             type="button"
                             onClick={cancelDownload}
-                            variant="destructive"
-                            size="lg"
-                            className="px-6"
+                            className="cancel-button"
                         >
                             Cancel
-                        </Button>
-                    )}
-                </div>
-            </form>
-
-            {/* Progress Section */}
-            {isDownloading && progress && (
-                <div className="mt-6 space-y-4">
-                    <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-medium text-zinc-200">Download Progress</h3>
-                            <span className="text-xs text-zinc-400">{(progress.percent || 0).toFixed(1)}%</span>
-                        </div>
-                        <ProgressBar progress={progress} />
-                        {progress.filename && (
-                            <p className="text-xs text-zinc-400 truncate">{progress.filename}</p>
-                        )}
+                        </button>
                     </div>
-                    
-                    {/* Status Details Accordion */}
-                    <Accordion title="Download Details" className="mt-4">
-                        <div className="space-y-3 text-xs">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <span className="text-zinc-400">Speed:</span>
-                                    <span className="ml-2 text-zinc-200">{progress.speed || '0 B/s'}</span>
+
+                    {progress && (
+                        <div className="progress-bar-container">
+                            <div className="progress-info">
+                                <span className="progress-filename">
+                                    {progress.filename || 'Preparing download...'}
+                                </span>
+                                <span className="progress-percent">
+                                    {Math.round(progress.percent || 0)}%
+                                </span>
+                            </div>
+
+                            <div className="progress-bar-wrapper">
+                                <div
+                                    className="progress-bar"
+                                    style={{ width: `${progress.percent || 0}%` }}
+                                />
+                            </div>
+
+                            <div className="progress-stats">
+                                <div className="progress-stat">
+                                    <div className="progress-stat-label">SPEED</div>
+                                    <div className="progress-stat-value">{progress.speed || '0 B/s'}</div>
                                 </div>
-                                <div>
-                                    <span className="text-zinc-400">ETA:</span>
-                                    <span className="ml-2 text-zinc-200">{progress.eta || 'Unknown'}</span>
+                                <div className="progress-stat">
+                                    <div className="progress-stat-label">DOWNLOADED</div>
+                                    <div className="progress-stat-value">
+                                        {formatBytes(progress.downloadedBytes || 0)} / {formatBytes(progress.totalBytes || 0)}
+                                    </div>
                                 </div>
-                                <div>
-                                    <span className="text-zinc-400">Downloaded:</span>
-                                    <span className="ml-2 text-zinc-200">
-                                        {formatBytes(progress.downloadedBytes || 0)}
-                                    </span>
-                                </div>
-                                <div>
-                                    <span className="text-zinc-400">Total:</span>
-                                    <span className="ml-2 text-zinc-200">
-                                        {formatBytes(progress.totalBytes || 0)}
-                                    </span>
+                                <div className="progress-stat">
+                                    <div className="progress-stat-label">TIME LEFT</div>
+                                    <div className="progress-stat-value">{progress.eta || '00:00'}</div>
                                 </div>
                             </div>
                         </div>
-                    </Accordion>
-
-                    {/* Console Logs Accordion */}
-                    {logs.length > 0 && (
-                        <Accordion title="Console Output">
-                            <div className="bg-zinc-950/50 rounded-lg p-3 max-h-32 overflow-y-auto custom-scrollbar">
-                                <div className="space-y-1 text-xs font-mono">
-                                    {logs.slice(-10).map((log, index) => (
-                                        <div key={index} className="text-zinc-300">
-                                            {log}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </Accordion>
                     )}
+
+                    <div className="console-container custom-scrollbar" ref={consoleRef}>
+                        <div className="console-header">
+                            <span className="console-title">Console Output</span>
+                        </div>
+                        <div className="console-output">
+                            {logs.length === 0 ? (
+                                <div className="console-line">
+                                    <span className="console-timestamp">[00:00:00]</span>
+                                    <span className="console-message">Waiting for output...</span>
+                                </div>
+                            ) : (
+                                logs.slice(-50).map((log, index) => (
+                                    <div key={index} className="console-line">
+                                        <span className="console-timestamp">{formatTime(log.split(']')[0] + ']')}</span>
+                                        <span className="console-message">{log.split('] ')[1] || log}</span>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
                 </div>
             )}
-            </PanelContent>
-        </Panel>
+        </div>
     );
-}
-
-// Helper function for formatting bytes
-function formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
