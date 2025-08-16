@@ -138,20 +138,18 @@
 
 .quality-select {
     width: 100%;
-    height: var(--download-option-height);
-    background: rgba(var(--download-bg-secondary), 0.04);
-    border: 1px solid rgba(var(--download-border-primary), 0.25);
-    border-radius: var(--download-radius-sm);
+    height: 44px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
     padding: 0 40px 0 16px;
-    color: rgba(var(--download-text-primary), 0.95);
+    color: rgba(255, 255, 255, 0.9);
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 0.2s ease;
     appearance: none;
-    box-shadow:
-            inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-            0 0 0 1px rgba(0, 0, 0, 0.5);
+    font-family: inherit;
 }
 
 /* ドロップダウン矢印のオーバーレイ */
@@ -163,112 +161,84 @@
     transform: translateY(-50%);
     width: 0;
     height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 6px solid rgba(var(--download-text-primary), 0.6);
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid rgba(255, 255, 255, 0.4);
     pointer-events: none;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.2s ease;
 }
 
 .quality-selector:hover::after {
-    border-top-color: rgba(var(--download-text-primary), 0.8);
+    border-top-color: rgba(255, 255, 255, 0.6);
 }
 
 .quality-select option {
-    background: #0a0a0a;
-    color: rgba(var(--download-text-primary), 0.95);
+    background: #1a1a1a;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .quality-select:hover {
-    background: rgba(var(--download-bg-secondary), 0.06);
-    border-color: rgba(var(--download-border-primary), 0.35);
-    box-shadow:
-            inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-            0 0 0 1px rgba(0, 0, 0, 0.5),
-            0 0 20px rgba(var(--download-button-primary), 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
 }
 
 .quality-select:focus {
     outline: none;
-    border-color: rgba(var(--download-button-primary), 0.6);
-    box-shadow:
-            inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-            0 0 0 1px rgba(var(--download-button-primary), 0.4),
-            0 0 24px rgba(var(--download-button-primary), 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 /* Audio Only Toggle */
 .audio-toggle {
-    height: var(--download-option-height);
-    background: rgba(var(--download-bg-secondary), 0.04);
-    border: 1px solid rgba(var(--download-border-primary), 0.25);
-    border-radius: var(--download-radius-sm);
+    height: 44px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
     padding: 0 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    box-shadow:
-            inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-            0 0 0 1px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
 }
 
-.audio-toggle::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(var(--download-button-primary), 0.1));
-    transition: width 0.3s ease;
-}
-
-.audio-toggle:hover::before {
-    width: 100%;
-}
-
 .audio-toggle:hover {
-    background: rgba(var(--download-bg-secondary), 0.06);
-    border-color: rgba(var(--download-border-primary), 0.35);
-    box-shadow:
-            inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-            0 0 0 1px rgba(0, 0, 0, 0.5),
-            0 0 20px rgba(var(--download-button-primary), 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.audio-toggle.active {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.audio-toggle.active:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
 }
 
 .audio-toggle-label {
     font-size: 14px;
-    color: rgba(var(--download-text-primary), 0.85);
+    color: rgba(255, 255, 255, 0.9);
     user-select: none;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: 0.01em;
-    position: relative;
-    z-index: 1;
 }
 
 .audio-toggle-switch {
     position: relative;
-    width: 44px;
-    height: 24px;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(var(--download-border-primary), 0.3);
-    border-radius: 12px;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    box-shadow:
-            inset 0 2px 4px rgba(0, 0, 0, 0.5),
-            0 0 0 1px rgba(0, 0, 0, 0.3);
+    width: 48px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .audio-toggle.active .audio-toggle-switch {
-    background: rgba(var(--download-button-primary), 0.25);
-    border-color: rgba(var(--download-button-primary), 0.5);
-    box-shadow:
-            inset 0 2px 4px rgba(0, 0, 0, 0.2),
-            0 0 16px rgba(var(--download-button-primary), 0.3);
+    background: rgba(59, 130, 246, 0.9);
 }
 
 .audio-toggle-switch::after {
@@ -276,22 +246,16 @@
     position: absolute;
     top: 2px;
     left: 2px;
-    width: 18px;
-    height: 18px;
-    background: linear-gradient(135deg, rgba(200, 200, 200, 0.95), rgba(160, 160, 160, 0.95));
-    border-radius: 9px;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    box-shadow:
-            0 2px 4px rgba(0, 0, 0, 0.4),
-            0 0 0 1px rgba(255, 255, 255, 0.1);
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .audio-toggle.active .audio-toggle-switch::after {
     transform: translateX(20px);
-    background: linear-gradient(135deg, rgb(var(--download-button-primary)), rgb(var(--download-button-secondary)));
-    box-shadow:
-            0 2px 8px rgba(var(--download-button-primary), 0.5),
-            0 0 0 1px rgba(var(--download-button-secondary), 0.3);
 }
 
 /* Download Button */

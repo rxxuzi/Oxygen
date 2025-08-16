@@ -49,7 +49,7 @@ export function SettingsPanel() {
                         <h2 className="settings-section-title">Video Settings</h2>
                     </div>
 
-                    <div className="settings-grid settings-grid-2">
+                    <div className="settings-fields">
                         <div className="settings-field">
                             <label className="settings-label">Format</label>
                             <div className="settings-select">
@@ -97,7 +97,7 @@ export function SettingsPanel() {
                         <h2 className="settings-section-title">Audio Settings</h2>
                     </div>
 
-                    <div className="settings-grid settings-grid-2">
+                    <div className="settings-fields">
                         <div className="settings-field">
                             <label className="settings-label">Format</label>
                             <div className="settings-select">
@@ -145,7 +145,7 @@ export function SettingsPanel() {
                         <h2 className="settings-section-title">Download Settings</h2>
                     </div>
 
-                    <div className="settings-grid settings-grid-3">
+                    <div className="settings-fields settings-fields-row">
                         <div className="settings-field">
                             <label className="settings-label">Segments</label>
                             <input
@@ -217,7 +217,7 @@ export function SettingsPanel() {
                         </div>
                     </div>
 
-                    <div className="settings-grid settings-grid-2" style={{ marginTop: '20px' }}>
+                    <div className="settings-fields" style={{ marginTop: '20px' }}>
                         <div className="settings-field">
                             <label className="settings-label">Proxy Server</label>
                             <input

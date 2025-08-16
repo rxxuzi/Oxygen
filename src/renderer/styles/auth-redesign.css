@@ -1,0 +1,188 @@
+/* Auth Page Specific Styles */
+
+.auth-header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.auth-header .body-medium {
+  margin-top: var(--space-2);
+}
+
+/* File Input Styling */
+.file-input-container {
+  position: relative;
+}
+
+.file-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.file-input-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 52px;
+}
+
+.file-input-label:hover {
+  background: var(--surface-elevated);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.file-input:focus + .file-input-label {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Form Layout */
+.form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Auth Table Container */
+.auth-table-container {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.auth-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.auth-table th {
+  background: var(--surface-elevated);
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-4) var(--space-5);
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.auth-table th:first-child {
+  width: 120px;
+}
+
+.auth-table th:nth-child(3) {
+  width: 100px;
+}
+
+.auth-table th:last-child {
+  width: 120px;
+}
+
+.auth-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background-color var(--transition-fast);
+}
+
+.auth-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.auth-table tbody tr:hover {
+  background: var(--surface-elevated);
+}
+
+.auth-table td {
+  padding: var(--space-4) var(--space-5);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+/* Domain Cell */
+.domain-cell {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-primary);
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Type Badge */
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* Button Sizes */
+.btn-sm {
+  padding: var(--space-2) var(--space-3);
+  font-size: 13px;
+  gap: var(--space-2);
+}
+
+.btn-sm svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-table {
+    font-size: 13px;
+  }
+  
+  .auth-table th,
+  .auth-table td {
+    padding: var(--space-3) var(--space-4);
+  }
+  
+  .auth-table th:first-child {
+    width: 100px;
+  }
+  
+  .auth-table th:last-child {
+    width: 100px;
+  }
+  
+  .domain-cell {
+    max-width: 200px;
+  }
+  
+  .btn-sm {
+    padding: var(--space-1) var(--space-2);
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-table th:nth-child(3),
+  .auth-table td:nth-child(3) {
+    display: none;
+  }
+  
+  .domain-cell {
+    max-width: 150px;
+  }
+}

@@ -4,6 +4,19 @@ import { Input } from './ui/Input';
 import { Button } from './ui/Button';
 import { Card } from './ui/card';
 import { FileInput } from './ui/FileInput';
+import { 
+    Shield, 
+    Cookie, 
+    KeyRound, 
+    Upload, 
+    Save, 
+    Trash2,
+    CheckCircle,
+    XCircle,
+    Link,
+    Clock
+} from 'lucide-react';
+import '../styles/auth.css';
 
 export function AuthPanel() {
     const { authEntries, loadAuthEntries, saveCookie, saveCredentials, deleteAuth } = useAuthStore();
@@ -25,6 +38,7 @@ export function AuthPanel() {
         e.preventDefault();
 
         if (!cookieUrl || !cookieFile) {
+            // TODO: Replace with toast notification
             alert('Please enter a URL and select a cookie file');
             return;
         }
@@ -33,6 +47,7 @@ export function AuthPanel() {
         const success = await saveCookie(cookieUrl, content);
 
         if (success) {
+            // TODO: Replace with toast notification
             alert('Cookie saved successfully');
             setCookieUrl('');
             setCookieFile(null);
@@ -46,6 +61,7 @@ export function AuthPanel() {
         e.preventDefault();
 
         if (!passUrl || !username || !password) {
+            // TODO: Replace with toast notification
             alert('Please fill all fields');
             return;
         }
@@ -53,6 +69,7 @@ export function AuthPanel() {
         const success = await saveCredentials(passUrl, username, password);
 
         if (success) {
+            // TODO: Replace with toast notification
             alert('Credentials saved successfully');
             setPassUrl('');
             setUsername('');
@@ -64,6 +81,7 @@ export function AuthPanel() {
     };
 
     const handleDelete = async (domain: string, type: 'cookie' | 'pass') => {
+        // TODO: Replace with modal confirmation
         if (confirm(`Delete ${type} for ${domain}?`)) {
             const success = await deleteAuth(domain, type);
             if (success) {
@@ -72,150 +90,194 @@ export function AuthPanel() {
         }
     };
 
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+    };
+
     return (
-        <div className="space-y-6">
-            {/* Cookie Form */}
-            <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Add Cookie Authentication</h3>
-
-                <form onSubmit={handleCookieSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">
-                            Website URL
-                        </label>
-                        <Input
-                            type="url"
-                            placeholder="https://example.com"
-                            value={cookieUrl}
-                            onChange={(e) => setCookieUrl(e.target.value)}
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">
-                            Select cookies.txt file
-                        </label>
-                        <FileInput
-                            accept=".txt"
-                            onFileSelect={setCookieFile}
-                            buttonText="Choose File"
-                            fileName={cookieFile?.name}
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">
-                            Export cookies from your browser in Netscape format
-                        </p>
-                    </div>
-
-                    <Button type="submit" variant="primary" className="w-full">
-                        Upload Cookies
-                    </Button>
-                </form>
-            </Card>
-
-            {/* Password Form */}
-            <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Add Password Authentication</h3>
-
-                <form onSubmit={handlePasswordSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">
-                            Website URL
-                        </label>
-                        <Input
-                            type="url"
-                            placeholder="https://example.com"
-                            value={passUrl}
-                            onChange={(e) => setPassUrl(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-zinc-300 mb-2">
-                                Username
-                            </label>
-                            <Input
-                                type="text"
-                                placeholder="Username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
+        <div className="auth-container">
+            <div className="auth-box">
+                <div className="auth-content">
+                    {/* Cookie Authentication Section */}
+                    <div className="auth-section">
+                        <div className="auth-section-header">
+                            <div className="auth-section-icon">
+                                <Cookie size={20} />
+                            </div>
+                            <h2 className="auth-section-title">Cookie Authentication</h2>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-zinc-300 mb-2">
-                                Password
-                            </label>
-                            <Input
-                                type="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </div>
+                        <form onSubmit={handleCookieSubmit} className="auth-form">
+                            <div className="auth-field">
+                                <label className="auth-label">Website URL</label>
+                                <div className="auth-input-group">
+                                    <Link size={16} className="auth-input-icon" />
+                                    <input
+                                        type="url"
+                                        placeholder="https://example.com"
+                                        value={cookieUrl}
+                                        onChange={(e) => setCookieUrl(e.target.value)}
+                                        className="auth-input"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="auth-field">
+                                <label className="auth-label">Cookies File</label>
+                                <div className="auth-file-input">
+                                    <FileInput
+                                        accept=".txt"
+                                        onFileSelect={setCookieFile}
+                                        buttonText="Choose File"
+                                        fileName={cookieFile?.name}
+                                    />
+                                </div>
+                                <div className="auth-help-text">
+                                    Export cookies from your browser in Netscape format
+                                </div>
+                            </div>
+
+                            <button type="submit" className="auth-submit-button">
+                                <Upload size={16} />
+                                Upload Cookies
+                            </button>
+                        </form>
                     </div>
 
-                    <Button type="submit" variant="primary" className="w-full">
-                        Save Credentials
-                    </Button>
-                </form>
-            </Card>
+                    {/* Password Authentication Section */}
+                    <div className="auth-section">
+                        <div className="auth-section-header">
+                            <div className="auth-section-icon">
+                                <KeyRound size={20} />
+                            </div>
+                            <h2 className="auth-section-title">Password Authentication</h2>
+                        </div>
 
-            {/* Auth Table */}
-            <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Saved Authentication</h3>
+                        <form onSubmit={handlePasswordSubmit} className="auth-form">
+                            <div className="auth-field">
+                                <label className="auth-label">Website URL</label>
+                                <div className="auth-input-group">
+                                    <Link size={16} className="auth-input-icon" />
+                                    <input
+                                        type="url"
+                                        placeholder="https://example.com"
+                                        value={passUrl}
+                                        onChange={(e) => setPassUrl(e.target.value)}
+                                        className="auth-input"
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="border-b border-border">
-                                <th className="text-left p-3 font-medium text-zinc-300">Status</th>
-                                <th className="text-left p-3 font-medium text-zinc-300">Domain</th>
-                                <th className="text-left p-3 font-medium text-zinc-300">Type</th>
-                                <th className="text-left p-3 font-medium text-zinc-300">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                            <div className="auth-credentials">
+                                <div className="auth-field">
+                                    <label className="auth-label">Username</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        className="auth-input"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="auth-field">
+                                    <label className="auth-label">Password</label>
+                                    <input
+                                        type="password"
+                                        placeholder="Enter password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="auth-input"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <button type="submit" className="auth-submit-button">
+                                <Save size={16} />
+                                Save Credentials
+                            </button>
+                        </form>
+                    </div>
+
+                    {/* Saved Authentication Section */}
+                    <div className="auth-section">
+                        <div className="auth-section-header">
+                            <div className="auth-section-icon">
+                                <Shield size={20} />
+                            </div>
+                            <h2 className="auth-section-title">Saved Authentication</h2>
+                        </div>
+
+                        <div className="auth-entries">
                             {authEntries.length === 0 ? (
-                                <tr>
-                                    <td colSpan={4} className="text-center text-muted-foreground p-8">
-                                        No authentication entries
-                                    </td>
-                                </tr>
+                                <div className="auth-empty">
+                                    <Shield size={48} className="auth-empty-icon" />
+                                    <div className="auth-empty-title">No authentication entries</div>
+                                    <div className="auth-empty-description">Add cookie or password authentication above</div>
+                                </div>
                             ) : (
                                 authEntries.map((entry) => (
-                                    <tr key={`${entry.domain}-${entry.type}`} className="border-b border-border hover:bg-accent/50 transition-colors">
-                                        <td className="p-3">
-                                            <span className={`inline-flex items-center gap-1 text-sm font-medium ${
-                                                entry.status === 'success' 
-                                                    ? 'text-green-600 dark:text-green-400' 
-                                                    : 'text-red-600 dark:text-red-400'
-                                            }`}>
-                                                {entry.status === 'success' ? '✓ Active' : '✗ Error'}
-                                            </span>
-                                        </td>
-                                        <td className="p-3 text-sm">{entry.domain}</td>
-                                        <td className="p-3">
-                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent text-accent-foreground">
-                                                {entry.type === 'cookie' ? 'Cookie' : 'Password'}
-                                            </span>
-                                        </td>
-                                        <td className="p-3">
-                                            <Button
+                                    <div key={`${entry.domain}-${entry.type}`} className="auth-entry">
+                                        <div className="auth-entry-status">
+                                            {entry.status === 'success' ? (
+                                                <CheckCircle size={20} className="auth-status-success" />
+                                            ) : (
+                                                <XCircle size={20} className="auth-status-error" />
+                                            )}
+                                        </div>
+                                        
+                                        <div className="auth-entry-content">
+                                            <div className="auth-entry-main">
+                                                <div className="auth-entry-domain">
+                                                    {entry.domain}
+                                                </div>
+                                                <div className="auth-entry-type">
+                                                    {entry.type === 'cookie' ? (
+                                                        <>
+                                                            <Cookie size={12} />
+                                                            Cookie
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <KeyRound size={12} />
+                                                            Password
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="auth-entry-details">
+                                                <div className="auth-entry-date">
+                                                    <Clock size={12} />
+                                                    {formatDate(entry.createdAt)}
+                                                </div>
+                                                <div className="auth-entry-status-text">
+                                                    {entry.status === 'success' ? 'Active' : 'Error'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="auth-entry-actions">
+                                            <button
                                                 onClick={() => handleDelete(entry.domain, entry.type)}
-                                                variant="destructive"
-                                                size="sm"
+                                                className="auth-delete-button"
+                                                title={`Delete ${entry.type} for ${entry.domain}`}
                                             >
-                                                Delete
-                                            </Button>
-                                        </td>
-                                    </tr>
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
                                 ))
                             )}
-                        </tbody>
-                    </table>
+                        </div>
+                    </div>
                 </div>
-            </Card>
+            </div>
         </div>
     );
 }

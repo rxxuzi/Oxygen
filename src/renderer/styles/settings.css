@@ -13,14 +13,12 @@
 /* Settings Box */
 .settings-box {
     width: 100%;
-    max-width: 680px;
+    max-width: 800px;
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 16px;
-    padding: 48px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
     animation: settingsFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -56,8 +54,8 @@
 
 /* Settings Section */
 .settings-section {
-    margin-bottom: 40px;
-    padding-bottom: 40px;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
@@ -72,7 +70,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .settings-section-icon {
@@ -88,10 +86,16 @@
     text-transform: uppercase;
 }
 
-/* Settings Grid */
-.settings-grid {
+/* Settings Fields */
+.settings-fields {
     display: flex;
     flex-direction: column;
+    gap: 20px;
+}
+
+.settings-fields-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 16px;
 }
 
@@ -100,6 +104,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
 }
 
 .settings-label {
@@ -202,10 +207,12 @@
     display: flex;
     gap: 8px;
     align-items: stretch;
+    width: 100%;
 }
 
 .settings-path-input {
     flex: 1;
+    min-width: 0;
 }
 
 .settings-browse-button {
@@ -347,18 +354,6 @@
     transform: scale(0.98);
 }
 
-/* Format Options Grid */
-.settings-grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-}
-
-.settings-grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-}
 
 /* Scrollbar */
 .settings-container::-webkit-scrollbar {
@@ -392,8 +387,7 @@
         font-size: 28px;
     }
     
-    .settings-grid-2,
-    .settings-grid-3 {
+    .settings-fields-row {
         grid-template-columns: 1fr;
     }
     

@@ -9,7 +9,7 @@ lerna-debug.log*
 .pnp.js
 .claude/
 CLAUDE.md
-
+doc/
 
 # Build outputs
 dist/
