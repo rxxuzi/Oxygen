@@ -24,10 +24,6 @@
     "target": [
       {
         "target": "nsis",
-        "arch": ["x64", "ia32"]
-      },
-      {
-        "target": "portable",
         "arch": ["x64"]
       },
       {
@@ -35,7 +31,7 @@
         "arch": ["x64"]
       }
     ],
-    "icon": "resources/icons/icon.ico",
+    "icon": "resources/icons/icon.png",
     "publisherName": "rxxuzi",
     "requestedExecutionLevel": "asInvoker",
     "signAndEditExecutable": false,
@@ -47,18 +43,12 @@
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
     "allowElevation": true,
-    "installerIcon": "resources/icons/icon.ico",
-    "uninstallerIcon": "resources/icons/icon.ico",
-    "installerHeaderIcon": "resources/icons/icon.ico",
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
     "shortcutName": "Oxygen",
     "artifactName": "${productName}-Setup-${version}.${ext}",
     "uninstallDisplayName": "Oxygen",
     "deleteAppDataOnUninstall": false
-  },
-  "portable": {
-    "artifactName": "${productName}-Portable-${version}.${ext}"
   },
   "mac": {
     "target": [
