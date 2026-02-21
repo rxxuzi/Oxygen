@@ -90,7 +90,6 @@ temp/
 *.7z
 
 # Lock files (optional - uncomment if you don't want to commit lock files)
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
 

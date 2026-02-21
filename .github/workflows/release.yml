@@ -51,46 +51,8 @@ jobs:
             release/*.exe
             release/*.zip
 
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - run: npm ci
-
-      - name: Download yt-dlp
-        run: |
-          mkdir -p resources/binaries/linux
-          curl -L -o resources/binaries/linux/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
-          chmod +x resources/binaries/linux/yt-dlp
-
-      - name: Download FFmpeg
-        run: |
-          sudo apt-get update && sudo apt-get install -y ffmpeg
-          cp $(which ffmpeg) resources/binaries/linux/ffmpeg
-          chmod +x resources/binaries/linux/ffmpeg
-
-      - name: Build
-        run: npm run build
-
-      - name: Package
-        run: npx electron-builder --linux --config config/electron-builder.json --publish never
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-release
-          path: |
-            release/*.AppImage
-            release/*.deb
-
   publish:
-    needs: [build-windows, build-linux]
+    needs: [build-windows]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -106,4 +68,3 @@ jobs:
           generate_release_notes: true
           files: |
             artifacts/windows-release/*
-            artifacts/linux-release/*
