@@ -5,11 +5,11 @@ import { useAuthStore } from '../stores/auth-store';
 import { useClipboardPaste } from '../hooks/useClipboardPaste';
 import { PasteConfirmDialog } from './PasteConfirmDialog';
 import { Quality } from '../../shared/types';
-import '../styles/download.css';
 
 export function DownloadForm() {
     const [url, setUrl] = useState('');
     const [audioOnly, setAudioOnly] = useState(false);
+    const [powerMode, setPowerMode] = useState(false);
     const [quality, setQuality] = useState<Quality>('best');
     const [phase, setPhase] = useState<'idle' | 'downloading' | 'processing'>('idle');
     const consoleRef = useRef<HTMLDivElement>(null);
@@ -22,7 +22,6 @@ export function DownloadForm() {
     const {
         isDialogVisible,
         clipboardText,
-        position,
         handleInputFocus,
         handleConfirm,
         handleCancel
@@ -71,6 +70,7 @@ export function DownloadForm() {
             segments: settings.segments,
             retries: settings.retries,
             bufferSize: settings.bufferSize,
+            powerMode,
             ...authData
         };
 
@@ -92,13 +92,14 @@ export function DownloadForm() {
 
     return (
         <>
-            <div className={`download-container ${isDownloading ? 'downloading' : ''}`}>
-            <div className={`download-box ${isDownloading ? 'compact' : ''}`}>
-                <form onSubmit={handleSubmit}>
-                    <div className="url-input-wrapper">
+            <div className={`relative w-full h-full flex flex-col items-center transition-all duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] ${isDownloading ? 'justify-start pt-[10vh]' : 'justify-center'}`}>
+                {/* Form */}
+                <form onSubmit={handleSubmit} className={`w-full max-w-[560px] space-y-4 transition-all duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] ${isDownloading ? '-translate-y-6' : ''}`}>
+                    {/* URL Input */}
+                    <div className="relative z-[100]">
                         <input
                             type="url"
-                            className="url-input"
+                            className="w-full h-14 bg-white/[0.06] border border-white/[0.1] rounded-2xl px-6 text-[15px] text-white/90 transition-all duration-200 placeholder:text-white/30 hover:border-white/[0.18] focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/15 disabled:opacity-40 disabled:cursor-not-allowed"
                             placeholder="Paste video URL here..."
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
@@ -108,145 +109,152 @@ export function DownloadForm() {
                         />
                     </div>
 
+                    {/* Options */}
                     {url && !isDownloading && (
-                        <div className="options-grid">
-                            <div className="quality-selector">
+                        <div className="flex items-center gap-3 opacity-0 animate-fade-in-up-fast">
+                            <div className="select-arrow flex-1">
                                 <select
-                                    className="quality-select"
+                                    className="w-full h-11 bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 pr-10 text-white/80 text-sm cursor-pointer transition-all duration-200 appearance-none font-[inherit] hover:bg-white/[0.06] hover:border-white/[0.14] focus:outline-none focus:border-blue-500/40"
                                     value={quality}
                                     onChange={(e) => setQuality(e.target.value as Quality)}
                                     disabled={audioOnly}
                                 >
-                                    <option value="best">Best Quality</option>
-                                    <option value="high">High (1080p)</option>
-                                    <option value="medium">Medium (720p)</option>
-                                    <option value="low">Low (480p)</option>
-                                    <option value="worst">Lowest</option>
+                                    <option value="best" className="bg-[#111]">Best Quality</option>
+                                    <option value="high" className="bg-[#111]">High (1080p)</option>
+                                    <option value="medium" className="bg-[#111]">Medium (720p)</option>
+                                    <option value="low" className="bg-[#111]">Low (480p)</option>
+                                    <option value="worst" className="bg-[#111]">Lowest</option>
                                 </select>
                             </div>
 
                             <div
-                                className={`audio-toggle ${audioOnly ? 'active' : ''}`}
+                                className={`h-11 rounded-xl px-4 flex items-center gap-3 cursor-pointer transition-all duration-200 border ${
+                                    audioOnly
+                                        ? 'bg-blue-500/10 border-blue-500/20 hover:bg-blue-500/15'
+                                        : 'bg-white/[0.04] border-white/[0.08] hover:bg-white/[0.06]'
+                                }`}
                                 onClick={() => setAudioOnly(!audioOnly)}
                             >
-                                <span className="audio-toggle-label">Audio Only</span>
-                                <div className="audio-toggle-switch" />
+                                <span className="text-sm text-white/80 select-none whitespace-nowrap">Audio Only</span>
+                                <div className={`toggle-switch ${audioOnly ? 'active' : ''}`} />
+                            </div>
+
+                            <div
+                                className={`h-11 rounded-xl px-4 flex items-center gap-3 cursor-pointer transition-all duration-200 border ${
+                                    powerMode
+                                        ? 'bg-amber-500/10 border-amber-500/20 hover:bg-amber-500/15'
+                                        : 'bg-white/[0.04] border-white/[0.08] hover:bg-white/[0.06]'
+                                }`}
+                                onClick={() => setPowerMode(!powerMode)}
+                            >
+                                <span className="text-sm text-white/80 select-none whitespace-nowrap">Power Mode</span>
+                                <div className={`toggle-switch ${powerMode ? 'active-amber' : ''}`} />
                             </div>
                         </div>
                     )}
 
+                    {/* Download Button */}
                     <button
                         type="submit"
-                        className="download-button"
+                        className="download-btn-hover w-full h-14 bg-gradient-to-b from-blue-500 to-blue-600 rounded-2xl text-white text-[15px] font-medium transition-all duration-200 flex items-center justify-center gap-2.5 relative overflow-hidden disabled:bg-none disabled:bg-white/[0.06] disabled:text-white/20 disabled:cursor-not-allowed"
                         disabled={isDownloading || !url.trim()}
                     >
                         {isDownloading ? (
                             <>
-                                <svg className="status-spinner" viewBox="0 0 24 24" />
-                                <span>Downloading...</span>
+                                <svg className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin relative z-[1]" viewBox="0 0 24 24" />
+                                <span className="relative z-[1]">Downloading...</span>
                             </>
                         ) : (
                             <>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <svg className="relative z-[1]" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                                     <polyline points="7 10 12 15 17 10" />
                                     <line x1="12" y1="15" x2="12" y2="3" />
                                 </svg>
-                                <span>Download</span>
+                                <span className="relative z-[1]">Download</span>
                             </>
                         )}
                     </button>
                 </form>
-            </div>
 
-            {isDownloading && (
-                <div className="progress-section">
-                    <div className="status-header">
-                        <div className="status-text">
-                            <span className="status-label">STATUS</span>
-                            <div className="processing-phase">
-                                <span className="status-phase">
+                {/* Progress Section */}
+                {isDownloading && (
+                    <div className="w-full max-w-[680px] mt-8 space-y-4 opacity-0 animate-fade-in-up-fast">
+                        {/* Status Header */}
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-3 h-3 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                                <span className="text-sm text-white/70 font-medium">
                                     {phase === 'processing' ? 'Processing' : 'Downloading'}
                                 </span>
                                 {phase === 'processing' && (
-                                    <div className="processing-dots">
-                                        <div className="processing-dot" />
-                                        <div className="processing-dot" />
-                                        <div className="processing-dot" />
+                                    <div className="flex gap-[3px]">
+                                        <div className="w-1 h-1 bg-blue-400 rounded-full animate-processing-pulse" />
+                                        <div className="w-1 h-1 bg-blue-400 rounded-full animate-processing-pulse [animation-delay:0.2s]" />
+                                        <div className="w-1 h-1 bg-blue-400 rounded-full animate-processing-pulse [animation-delay:0.4s]" />
                                     </div>
                                 )}
                             </div>
-                            <div className="status-spinner" />
+                            <button
+                                type="button"
+                                onClick={cancelDownload}
+                                className="text-[13px] text-white/30 hover:text-red-400 transition-colors duration-200"
+                            >
+                                Cancel
+                            </button>
                         </div>
-                        <button
-                            type="button"
-                            onClick={cancelDownload}
-                            className="cancel-button"
+
+                        {/* Progress Details */}
+                        {progress && (
+                            <div>
+                                <div className="flex justify-between items-baseline mb-2.5">
+                                    <span className="text-sm text-white/60 truncate max-w-[70%]">
+                                        {progress.filename || 'Preparing...'}
+                                    </span>
+                                    <span className="text-xl font-semibold text-white tabular-nums">
+                                        {Math.round(progress.percent || 0)}%
+                                    </span>
+                                </div>
+
+                                <div className="w-full h-1 bg-white/[0.08] rounded-full overflow-hidden">
+                                    <div
+                                        className="progress-shimmer h-full bg-blue-500 rounded-full transition-[width] duration-300 ease-out"
+                                        style={{ width: `${progress.percent || 0}%` }}
+                                    />
+                                </div>
+
+                                <div className="flex items-center gap-5 mt-3 text-[13px] text-white/35">
+                                    <span>{progress.speed || '—'}</span>
+                                    <span className="text-white/10">|</span>
+                                    <span>{formatBytes(progress.downloadedBytes || 0)} / {formatBytes(progress.totalBytes || 0)}</span>
+                                    <span className="text-white/10">|</span>
+                                    <span>{progress.eta || '—'}</span>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Console Output */}
+                        <div
+                            className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-4 h-52 overflow-y-auto font-mono scrollbar-thin"
+                            ref={consoleRef}
                         >
-                            Cancel
-                        </button>
-                    </div>
-
-                    {progress && (
-                        <div className="progress-bar-container">
-                            <div className="progress-info">
-                                <span className="progress-filename">
-                                    {progress.filename || 'Preparing download...'}
-                                </span>
-                                <span className="progress-percent">
-                                    {Math.round(progress.percent || 0)}%
-                                </span>
-                            </div>
-
-                            <div className="progress-bar-wrapper">
-                                <div
-                                    className="progress-bar"
-                                    style={{ width: `${progress.percent || 0}%` }}
-                                />
-                            </div>
-
-                            <div className="progress-stats">
-                                <div className="progress-stat">
-                                    <div className="progress-stat-label">SPEED</div>
-                                    <div className="progress-stat-value">{progress.speed || '0 B/s'}</div>
-                                </div>
-                                <div className="progress-stat">
-                                    <div className="progress-stat-label">DOWNLOADED</div>
-                                    <div className="progress-stat-value">
-                                        {formatBytes(progress.downloadedBytes || 0)} / {formatBytes(progress.totalBytes || 0)}
-                                    </div>
-                                </div>
-                                <div className="progress-stat">
-                                    <div className="progress-stat-label">TIME LEFT</div>
-                                    <div className="progress-stat-value">{progress.eta || '00:00'}</div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="console-container custom-scrollbar" ref={consoleRef}>
-                        <div className="console-header">
-                            <span className="console-title">Console Output</span>
-                        </div>
-                        <div className="console-output">
                             {logs.length === 0 ? (
-                                <div className="console-line">
-                                    <span className="console-timestamp">[00:00:00]</span>
-                                    <span className="console-message">Waiting for output...</span>
-                                </div>
+                                <span className="text-[11px] text-white/20">Waiting for output...</span>
                             ) : (
-                                logs.slice(-50).map((log, index) => (
-                                    <div key={index} className="console-line">
-                                        <span className="console-timestamp">{formatTime(log.split(']')[0] + ']')}</span>
-                                        <span className="console-message">{log.split('] ')[1] || log}</span>
-                                    </div>
-                                ))
+                                <div className="space-y-px">
+                                    {logs.slice(-50).map((log, index) => (
+                                        <div key={index} className="flex items-start gap-2 text-[11px] leading-relaxed">
+                                            <span className="text-blue-400/40 shrink-0">{formatTime(log.split(']')[0] + ']')}</span>
+                                            <span className="text-white/40 break-words">{log.split('] ')[1] || log}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             )}
                         </div>
                     </div>
-                </div>
-            )}
+                )}
             </div>
+
             {/* Paste confirmation toast */}
             <PasteConfirmDialog
                 isVisible={isDialogVisible}

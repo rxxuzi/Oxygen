@@ -31,7 +31,7 @@
         "arch": ["x64"]
       }
     ],
-    "icon": "resources/icons/icon.png",
+    "icon": "resources/icons/icon.ico",
     "publisherName": "rxxuzi",
     "requestedExecutionLevel": "asInvoker",
     "signAndEditExecutable": false,
@@ -57,7 +57,7 @@
         "arch": ["x64", "arm64"]
       }
     ],
-    "icon": "resources/icons/icon.icns",
+    "icon": "resources/icons/icon.png",
     "category": "public.app-category.utilities"
   },
   "linux": {

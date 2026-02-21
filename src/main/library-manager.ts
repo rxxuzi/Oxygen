@@ -1,4 +1,4 @@
-import { app, shell, clipboard } from 'electron';
+import { app, clipboard } from 'electron';
 import path from 'path';
 import fs from 'fs/promises';
 import { spawn } from 'child_process';
@@ -78,35 +78,17 @@ export class LibraryManager {
     }
 
     private getFileType(extension: string): 'video' | 'audio' | null {
-        // Only allow known video and audio extensions
         const videoExtensions = ['mp4', 'avi', 'mkv', 'mov', 'wmv', 'flv', 'webm', 'm4v', 'ts', '3gp', 'f4v', 'mpg', 'mpeg', 'ogv'];
         const audioExtensions = ['mp3', 'wav', 'flac', 'aac', 'ogg', 'wma', 'm4a', 'opus', 'aiff', 'alac', 'ac3', 'dts'];
-        
-        console.log(`Checking file extension: "${extension}"`);
-        
-        if (videoExtensions.includes(extension)) {
-            console.log(`✓ Valid video file: ${extension}`);
-            return 'video';
-        }
-        if (audioExtensions.includes(extension)) {
-            console.log(`✓ Valid audio file: ${extension}`);
-            return 'audio';
-        }
-        
-        // Log rejected files for debugging
-        console.log(`✗ Rejected non-media file: ${extension}`);
-        return null; // Not a media file
+
+        if (videoExtensions.includes(extension)) return 'video';
+        if (audioExtensions.includes(extension)) return 'audio';
+        return null;
     }
 
     private isMediaFile(extension: string): boolean {
-        if (!extension || extension.trim() === '') {
-            console.log('✗ Empty or invalid extension');
-            return false;
-        }
-        
-        const result = this.getFileType(extension) !== null;
-        console.log(`File extension "${extension}" is ${result ? 'ACCEPTED' : 'REJECTED'}`);
-        return result;
+        if (!extension || extension.trim() === '') return false;
+        return this.getFileType(extension) !== null;
     }
 
     async scanDownloadPaths(downloadPaths: string[]): Promise<LibraryFile[]> {

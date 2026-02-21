@@ -19,7 +19,15 @@ export function setupIpcHandlers(configManager: ConfigManager, authManager: Auth
             const window = BrowserWindow.fromWebContents(event.sender);
             if (!window) throw new Error('Window not found');
 
-            const result = await downloader.download(url, options, (progress) => {
+            const mode = options.powerMode ? 'Power Mode' : 'Normal';
+            const format = options.audioOnly ? `audio(${options.audioFormat})` : `video(${options.videoFormat})`;
+            console.warn(`[Download] ${mode} | ${format} | ${url}`);
+
+            const download = options.powerMode
+                ? downloader.downloadWithPowerMode.bind(downloader)
+                : downloader.download.bind(downloader);
+
+            const result = await download(url, options, (progress) => {
                 // Check if window is still available before sending progress
                 if (window && !window.isDestroyed()) {
                     // Normalize Unicode characters in filename for IPC transmission

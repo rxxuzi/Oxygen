@@ -1,9 +1,9 @@
 import {spawn} from 'child_process';
 import path from 'path';
 import fs from 'fs/promises';
-import util from 'util';
 import {app} from 'electron';
 import {DownloadOptions, DownloadProgress, DownloadResult} from '../shared/types';
+import {StreamInterceptor} from './stream-interceptor';
 
 export class Downloader {
     private readonly ytDlpPath: string;
@@ -543,6 +543,146 @@ export class Downloader {
         args.push('--concurrent-fragments', Math.min(options.segments || 4, 2).toString());
         args.push('--retries', options.retries?.toString() || '3');
         args.push('--buffer-size', options.bufferSize || '8K');
+    }
+
+    async downloadWithPowerMode(
+        url: string,
+        options: DownloadOptions,
+        progressCallback: (progress: DownloadProgress) => void
+    ): Promise<DownloadResult> {
+        progressCallback({
+            percent: 0, downloadedBytes: 0, totalBytes: 0,
+            speed: '0', eta: 'Scanning...', filename: 'Intercepting streams...'
+        });
+
+        const interceptor = new StreamInterceptor();
+
+        try {
+            await interceptor.openAndIntercept(url, (stream) => {
+                if (stream.type === 'm3u8') {
+                    console.warn('Power Mode: m3u8 captured', stream.url);
+                }
+            });
+
+            const best = interceptor.getBestM3U8();
+            if (!best) {
+                throw new Error('No HLS stream found on this page');
+            }
+
+            const streamUrl = best.url;
+            const streamReferer = best.referer;
+            console.warn(`Power Mode: selected stream: ${streamUrl}`);
+
+            const pageTitle = interceptor.getPageTitle();
+            const safeTitle = this.sanitizeTitle(pageTitle);
+
+            await fs.mkdir(options.outputPath, { recursive: true });
+
+            // Use yt-dlp with the intercepted m3u8 URL + Referer header
+            return await this.downloadStreamWithYtDlp(
+                streamUrl,
+                streamReferer,
+                options,
+                progressCallback,
+                safeTitle
+            );
+        } finally {
+            interceptor.destroy();
+        }
+    }
+
+    private async downloadStreamWithYtDlp(
+        streamUrl: string,
+        referer: string,
+        options: DownloadOptions,
+        progressCallback: (progress: DownloadProgress) => void,
+        title: string
+    ): Promise<DownloadResult> {
+        const args: string[] = [];
+
+        args.push('--no-playlist');
+        args.push('--progress');
+        args.push('--newline');
+        args.push('--encoding', 'UTF-8');
+
+        // Output with the page title as filename
+        const outputTemplate = path.join(options.outputPath, `${title}.%(ext)s`);
+        args.push('-o', outputTemplate);
+
+        // Referer header is critical for CDN access
+        args.push('--referer', referer);
+
+        // Extract origin from referer for Origin header
+        try {
+            const origin = new URL(referer).origin;
+            args.push('--add-header', `Origin:${origin}`);
+        } catch (_e) {
+            // ignore invalid URL
+        }
+
+        // Format & quality selection
+        if (options.audioOnly) {
+            args.push('-f', 'bestaudio/best');
+            if (options.audioFormat && options.audioFormat !== 'auto') {
+                args.push('-x');
+                args.push('--audio-format', options.audioFormat);
+                args.push('--audio-quality', '0');
+            }
+        } else {
+            const qualityMap: Record<string, string> = {
+                'best': 'bestvideo+bestaudio/best',
+                'high': 'bestvideo[height<=1080]+bestaudio/best[height<=1080]/best',
+                'medium': 'bestvideo[height<=720]+bestaudio/best[height<=720]/best',
+                'low': 'bestvideo[height<=480]+bestaudio/best[height<=480]/best',
+                'worst': 'worstvideo+worstaudio/worst',
+            };
+            args.push('-f', qualityMap[options.quality] || qualityMap['best']);
+
+            const format = options.videoFormat && options.videoFormat !== 'auto'
+                ? options.videoFormat : 'mp4';
+            args.push('--merge-output-format', format);
+        }
+
+        // FFmpeg location
+        args.push('--ffmpeg-location', this.ffmpegPath);
+
+        // Performance
+        args.push('--concurrent-fragments', (options.segments || 4).toString());
+        args.push('--retries', (options.retries || 5).toString());
+
+        args.push(streamUrl);
+
+        return this.executeDownload(args, options, progressCallback);
+    }
+
+    private sanitizeTitle(raw: string): string {
+        if (!raw) return `download_${Date.now()}`;
+
+        let title = raw;
+
+        // Remove common site suffixes
+        const suffixPatterns = [
+            /\s*[-|]\s*(Free|Watch|Online|Download|Stream|HD|Full).*$/i,
+            /\s*[-|]\s*[A-Za-z0-9]+\.(com|net|org|se|io|tv)\s*$/i,
+            /\s*[-|–—]\s*[^-|–—]{0,30}$/,
+        ];
+        for (const pattern of suffixPatterns) {
+            const cleaned = title.replace(pattern, '');
+            if (cleaned.length > 5) {
+                title = cleaned;
+                break;
+            }
+        }
+
+        // Remove illegal filesystem chars
+        // eslint-disable-next-line no-control-regex
+        title = title.replace(/[<>:"/\\|?*\x00-\x1f]/g, '_');
+        // Collapse whitespace
+        title = title.replace(/\s+/g, ' ').trim();
+        // Truncate
+        title = title.substring(0, 200);
+
+        return title || `download_${Date.now()}`;
     }
 
     cancel(): void {

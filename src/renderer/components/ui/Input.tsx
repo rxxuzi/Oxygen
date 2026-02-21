@@ -18,7 +18,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const {
       isDialogVisible,
       clipboardText,
-      position,
       handleInputFocus,
       handleConfirm,
       handleCancel
@@ -58,7 +57,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <PasteConfirmDialog
           isVisible={isDialogVisible}
           clipboardText={clipboardText}
-          position={position}
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />

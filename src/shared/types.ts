@@ -20,6 +20,7 @@ export interface DownloadOptions {
     segments?: number;
     retries?: number;
     bufferSize?: string;
+    powerMode?: boolean;
 }
 
 // Download progress

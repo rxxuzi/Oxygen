@@ -1,7 +1,6 @@
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, Menu, shell } from 'electron';
 import path from 'path';
 import { setupIpcHandlers } from './ipc-handlers';
-import { setupMenu } from './menu';
 import { ConfigManager } from './config';
 import { AuthManager } from './auth-manager';
 import Store from 'electron-store';
@@ -107,11 +106,31 @@ function createWindow() {
         });
     }
 
-    // Setup menu (disabled for minimal design)
-    // setupMenu(mainWindow);
-    
     // Set empty menu for minimal design
     mainWindow.setMenu(null);
+
+    // Enable right-click context menu (cut/copy/paste)
+    mainWindow.webContents.on('context-menu', (_event, params) => {
+        const menuItems: Electron.MenuItemConstructorOptions[] = [];
+
+        if (params.isEditable) {
+            menuItems.push(
+                { label: 'Cut', role: 'cut', enabled: params.editFlags.canCut },
+                { label: 'Copy', role: 'copy', enabled: params.editFlags.canCopy },
+                { label: 'Paste', role: 'paste', enabled: params.editFlags.canPaste },
+                { type: 'separator' },
+                { label: 'Select All', role: 'selectAll' }
+            );
+        } else if (params.selectionText) {
+            menuItems.push(
+                { label: 'Copy', role: 'copy' }
+            );
+        }
+
+        if (menuItems.length > 0) {
+            Menu.buildFromTemplate(menuItems).popup();
+        }
+    });
 }
 
 // Error handling
@@ -154,7 +173,7 @@ app.on('window-all-closed', () => {
 });
 
 // Handle app quit to ensure clean shutdown
-app.on('before-quit', (event) => {
+app.on('before-quit', (_event) => {
     console.log('Oxygen: Before quit event');
     
     // Cancel any ongoing downloads to prevent orphaned processes
@@ -170,7 +189,7 @@ app.on('before-quit', (event) => {
     });
 });
 
-app.on('will-quit', (event) => {
+app.on('will-quit', (_event) => {
     console.log('Oxygen: Will quit event');
     // Perform any final cleanup here
 });

@@ -1,7 +1,3 @@
-/* Import custom styles */
-@import './download.css';
-@import './settings.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -29,66 +25,20 @@
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
 
-    /* Blue shades */
     --blue-200: 213.1 93.9% 67.8%;
     --blue-400: 217.2 91.2% 73%;
     --blue-600: 217.2 91.2% 59.8%;
     --blue-700: 221.2 83.2% 53.3%;
 
-    /* Status colors */
     --yellow-600: 45 93.4% 47.5%;
     --green-600: 142.1 76.2% 36.3%;
     --red-600: 0 84.2% 60.2%;
 
-    /* Glass effect colors */
     --glass-bg: 255 255 255;
     --glass-border: 255 255 255;
 
-    /* Typography */
     --font-primary: 'Geist', system-ui, -apple-system, sans-serif;
     --font-mono: 'Geist Mono', 'SF Mono', Monaco, Consolas, monospace;
-
-    /* UI Colors */
-    --bg-main: 15 15 15;           /* メインボックスの背景 */
-    --bg-secondary: 255 255 255;    /* セカンダリ要素の背景 */
-    --border-primary: 255 255 255;  /* プライマリボーダー */
-    --text-primary: 255 255 255;    /* プライマリテキスト */
-    --text-secondary: 255 255 255;  /* セカンダリテキスト */
-    --console-bg: 20 20 20;         /* コンソール背景 */
-    --progress-bg: 20 20 20;        /* プログレスバー背景 */
-    --button-primary: 59 130 246;   /* ボタンのプライマリカラー */
-    --button-secondary: 37 99 235;  /* ボタンのセカンダリカラー */
-    --progress-start: 239 68 68;    /* プログレスバー開始色 */
-    --progress-end: 59 130 246;     /* プログレスバー終了色 */
-
-    /* UI Sizes */
-    --radius-sm: 12px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
-    --input-height: 56px;
-    --button-height: 52px;
-    --option-height: 48px;
-
-    /* Legacy support for download.css */
-    --download-font-primary: var(--font-primary);
-    --download-font-mono: var(--font-mono);
-    --download-bg-main: var(--bg-main);
-    --download-bg-secondary: var(--bg-secondary);
-    --download-border-primary: var(--border-primary);
-    --download-text-primary: var(--text-primary);
-    --download-text-secondary: var(--text-secondary);
-    --download-console-bg: var(--console-bg);
-    --download-progress-bg: var(--progress-bg);
-    --download-button-primary: var(--button-primary);
-    --download-button-secondary: var(--button-secondary);
-    --download-progress-start: var(--progress-start);
-    --download-progress-end: var(--progress-end);
-    --download-radius-sm: var(--radius-sm);
-    --download-radius-md: var(--radius-md);
-    --download-radius-lg: var(--radius-lg);
-    --download-input-height: var(--input-height);
-    --download-button-height: var(--button-height);
-    --download-option-height: var(--option-height);
   }
 
   .dark {
@@ -112,35 +62,37 @@
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
 
-    /* Blue shades for dark mode */
     --blue-200: 213.1 93.9% 67.8%;
     --blue-400: 213.3 93.9% 67.8%;
     --blue-600: 217.2 91.2% 59.8%;
     --blue-700: 224.3 76.3% 48%;
 
-    /* Status colors for dark mode */
     --yellow-600: 45 93.4% 47.5%;
     --green-600: 142.1 70.6% 45.3%;
 
-    /* Glass effect colors for dark mode */
     --glass-bg: 0 0 0;
     --glass-border: 255 255 255;
   }
-}
 
-@layer base {
   * {
     border-color: hsl(var(--border));
   }
+
   body {
     background: #000;
     color: white;
     font-feature-settings: "rlig" 1, "calt" 1;
     font-family: var(--font-primary);
   }
+
+  html, body, #root {
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+  }
 }
 
-/* Custom scrollbar */
+/* Global scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -160,68 +112,134 @@
   @apply bg-zinc-500;
 }
 
-/* Ensure full height */
-html, body, #root {
-  height: 100%;
-  overflow: hidden;
-  background: #000;
-}
+@layer components {
+  /* Thin scrollbar variant */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
 
-/* Minimal Animations */
-@keyframes fade-in {
-  from {
+  /* Panel scrollbar (settings, auth, logs, library) */
+  .scrollbar-panel::-webkit-scrollbar {
+    width: 8px;
+  }
+  .scrollbar-panel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+  }
+  .scrollbar-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Toggle switch knob (::after pseudo-element) */
+  .toggle-switch {
+    @apply relative w-12 h-7 rounded-full transition-all duration-300;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .toggle-switch::after {
+    content: '';
+    @apply absolute top-0.5 left-0.5 w-6 h-6 rounded-full transition-all duration-300;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  .toggle-switch.active {
+    background: rgba(59, 130, 246, 0.9);
+  }
+  .toggle-switch.active::after {
+    transform: translateX(20px);
+  }
+  .toggle-switch.active-amber {
+    background: rgba(245, 158, 11, 0.9);
+  }
+  .toggle-switch.active-amber::after {
+    transform: translateX(20px);
+  }
+
+  /* Download box top decorative line */
+  .download-box-line::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0.2) 80%,
+      transparent);
+  }
+
+  /* Download button hover overlay */
+  .download-btn-hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, hsl(var(--blue-400)) 0%, rgb(59, 130, 246) 100%);
     opacity: 0;
-    transform: translateY(10px);
+    transition: opacity 0.3s ease;
   }
-  to {
+  .download-btn-hover:not(:disabled):hover::before {
     opacity: 1;
-    transform: translateY(0);
   }
-}
 
-@keyframes slide-in-from-top {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+  /* Progress bar shimmer */
+  .progress-shimmer {
+    @apply relative overflow-hidden;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .progress-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 2s infinite;
   }
-}
 
-@keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
+  /* Select dropdown arrow */
+  .select-arrow {
+    @apply relative;
   }
-  to {
-    opacity: 1;
-    transform: scale(1);
+  .select-arrow::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid rgba(255, 255, 255, 0.4);
+    pointer-events: none;
+    transition: border-color 0.2s ease;
   }
-}
+  .select-arrow:hover::after {
+    border-top-color: rgba(255, 255, 255, 0.6);
+  }
 
-.animate-in {
-  animation-duration: 300ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  animation-fill-mode: both;
-}
-
-.fade-in {
-  animation-name: fade-in;
-}
-
-.slide-in-from-top {
-  animation-name: slide-in-from-top;
-}
-
-.scale-in {
-  animation-name: scale-in;
-}
-
-/* Smooth transitions */
-.transition-smooth {
-  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* Paste dialog slide-in from download.css */
+  .paste-dialog-slide-in {
+    animation: paste-dialog-slide-in 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  }
 }
 
 /* Glass morphism effect */
@@ -232,7 +250,7 @@ html, body, #root {
   border: 1px solid rgba(var(--glass-border), 0.08);
 }
 
-/* Custom Scrollbar for Dark Theme */
+/* Custom scrollbar for dark theme */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -246,27 +264,13 @@ html, body, #root {
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
-  transition: background 0.2s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
 }
 
-/* Focus styles */
-.focus-ring {
-  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-0;
-}
-
-/* Disable text selection on UI elements */
-.no-select {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* Monospace font for code/console */
+/* Monospace font */
 .font-mono {
-  font-family: var(--download-font-mono);
+  font-family: var(--font-mono);
 }

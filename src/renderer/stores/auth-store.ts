@@ -11,7 +11,7 @@ interface AuthStore {
     getAuthForUrl: (url: string) => Promise<AuthData>;
 }
 
-export const useAuthStore = create<AuthStore>((set, get) => ({
+export const useAuthStore = create<AuthStore>((set, _get) => ({
     authEntries: [],
 
     loadAuthEntries: async () => {

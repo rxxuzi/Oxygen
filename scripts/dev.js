@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const net = require('net');
 
-console.log('🚀 Starting Oxygen Development Environment...\n');
+console.log('Starting Oxygen Development Environment...\n');
 
 // Set NODE_ENV
 process.env.NODE_ENV = 'development';
@@ -143,7 +143,7 @@ async function main() {
                         return;
                     }
 
-                    console.log(`\n${colors.bright}${colors.yellow}📱 Starting Electron...${colors.reset}\n`);
+                    console.log(`\n${colors.bright}${colors.yellow}Starting Electron...${colors.reset}\n`);
 
                     electronProcess = runCommand('npx', ['electron', rootDir], 'Electron', colors.yellow);
 
@@ -182,10 +182,10 @@ function showDirStructure(dir, indent = '') {
         const stat = fs.statSync(filePath);
 
         if (stat.isDirectory()) {
-            console.log(`${indent}📁 ${file}/`);
+            console.log(`${indent}${file}/`);
             showDirStructure(filePath, indent + '  ');
         } else {
-            console.log(`${indent}📄 ${file}`);
+            console.log(`${indent}${file}`);
         }
     });
 }
@@ -211,7 +211,7 @@ process.on('SIGINT', cleanup);
 process.on('SIGTERM', cleanup);
 
 // Instructions
-console.log(`${colors.bright}📋 Development server starting...${colors.reset}`);
+console.log(`${colors.bright}Development server starting...${colors.reset}`);
 console.log(`${colors.cyan}• Vite server: http://localhost:9800${colors.reset}`);
 console.log(`${colors.cyan}• Electron will start after TypeScript compilation${colors.reset}`);
 console.log(`${colors.cyan}• Press Ctrl+C to stop all processes${colors.reset}\n`);

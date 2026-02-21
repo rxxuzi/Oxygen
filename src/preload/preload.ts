@@ -4,9 +4,6 @@ import { IPC_CHANNELS } from '../shared/ipc-channels';
 console.log('Preload script starting...');
 console.log('IPC_CHANNELS:', IPC_CHANNELS);
 
-// Type helper for IPC channels
-type IPCChannel = typeof IPC_CHANNELS[keyof typeof IPC_CHANNELS];
-
 // Define the API that will be exposed to the renderer
 const electronAPI = {
     // Invoke methods (request-response)
